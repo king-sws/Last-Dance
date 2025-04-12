@@ -160,7 +160,7 @@ const Hero = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute left-0 mt-2 w-60 rounded-lg bg-zinc-800/90 backdrop-blur-lg border border-white/10"
+                    className="absolute left-0 mt-2 w-60 rounded-lg bg-zinc-800/90 backdrop-blur-lg z-50 border border-white/10"
                   >
                     <div className="py-1">
                       {[
