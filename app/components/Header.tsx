@@ -1,8 +1,10 @@
 // components/Header.tsx
 "use client"
 import { useState, useEffect, useCallback } from "react";
-import { throttle } from "../helpers";
-import { BREAKPOINTS, SCROLL_CONFIG, TRANSITION_CLASSES } from "@/constant";
+import { BREAKPOINTS, SCROLL_CONFIG, throttle, TRANSITION_CLASSES } from "@/constant";
+import Logo from "@/cards/Logo";
+import MenuToggle from "@/cards/MenuToggle";
+import Navbar from "@/cards/NavBar";
 
 
 const Header = () => {
