@@ -130,15 +130,17 @@ const Hero = () => {
               </span>
               <br />
               <span className="font-medium text-2xl headline-1 lg:text-3xl mt-2 block">
-                Architecting Scalable Solutions
+                Building Modern Web Solutions
               </span>
             </h1>
             <p className="text-sm text-zinc-300 max-w-xl leading-relaxed">
-              Specializing in modern web application development with focus on
-              <strong className="text-cyan-400"> performance</strong>,
-              <strong className="text-cyan-400"> accessibility</strong>, and
-              <strong className="text-cyan-400"> clean architecture</strong>.
-              Proven track record delivering enterprise-grade solutions over 4+ years.
+              Building <strong className="text-cyan-400">modern web applications</strong> with 
+              <strong className="text-cyan-400"> React/Next.js frontends</strong> and 
+              <strong className="text-cyan-400"> Node.js backends</strong>. 
+              Focused on <strong className="text-cyan-400">performance optimization</strong>, 
+              <strong className="text-cyan-400"> clean code practices</strong>, and 
+              <strong className="text-cyan-400"> user experience</strong>. 
+              4+ years delivering solutions for fintech, healthtech, and e-commerce platforms.
             </p>
           </div>
 
@@ -167,12 +169,12 @@ const Hero = () => {
                         { 
                           name: "Full Stack CV", 
                           desc: "Complete work history and skills", 
-                          path: "/Resume-BF.pdf" 
+                          path: "/Last-dance Full ULTRA.pdf" 
                         },
                         { 
                           name: "Front End CV", 
                           desc: "Developer-focused experience", 
-                          path: "/OFontEnd.pdf" 
+                          path: "/Last-dance ULTRA.pdf" 
                         }
                       ].map((option, index) => (
                         <a

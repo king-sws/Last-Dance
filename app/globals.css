@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 @layer base {
   :root {
     --color-primary: 8 145 178;    /* Cyan-600 */
@@ -27,7 +28,7 @@
     line-height: 1.6;
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
-  
+
   h1, h2, h3 {
     font-family: var(--font-display);
     font-weight: 700;
@@ -40,13 +41,13 @@
   .container {
     @apply px-4 mx-auto lg:px-8 xl:max-w-6xl;
   }
-  
+
   /* Buttons */
   .btn {
     @apply inline-flex items-center justify-center gap-2.5 font-medium transition-all duration-300 ease-out 
            relative overflow-hidden;
   }
-  
+
   .btn-primary {
     @apply h-10 px-6 rounded-lg bg-gradient-to-r from-cyan-600 to-cyan-700 text-white 
            hover:from-cyan-500 hover:to-cyan-600 active:from-cyan-700 active:to-cyan-800
@@ -55,7 +56,7 @@
            transform hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]
            border border-cyan-500/20;
   }
-  
+
   /* Optional: Add a subtle shine effect on hover */
   .btn-primary::before {
     @apply content-[''] absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent 
@@ -68,7 +69,7 @@
            shadow-sm hover:shadow-cyan-500/10 focus:ring-2 focus:ring-cyan-500/30
            transform hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98];
   }
-  
+
   /* Subtle tertiary button */
   .btn-tertiary {
     @apply h-9 px-5 rounded-md bg-white/5 text-zinc-300 hover:text-cyan-400 
@@ -99,7 +100,7 @@
            placeholder:text-zinc-500 focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 
            transition-all outline-none;
   }
-  
+
   /* Headlines */
   .headline-1,
   .headline-2 {
@@ -108,11 +109,11 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  
+
   .headline-2 {
     @apply text-3xl lg:leading-tight font-semibold lg:text-4xl;
   }
-  
+
   /* Content containment */
   .skills-grid,
   .work-grid {
@@ -123,7 +124,7 @@
   .work-card {
     contain: content;
   }
-  
+
   /* Canvas */
   canvas {
     position: absolute;
@@ -334,10 +335,6 @@
     transition: transform 0.3s ease-out;
   }
 }
-
-
-
-
 
 @keyframes infinite-scroll {
   0% { transform: translateX(0); }

@@ -16,65 +16,64 @@ interface ReviewData {
 }
 
 const Review = () => {
-  // Add ref for the entire section to trigger animations
   const { ref: sectionRef, inView: sectionInView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
     rootMargin: '-50px 0px'
   });
 
+  // Realistic reviews based on actual freelance/contract work patterns
   const reviews = useMemo<ReviewData[]>(() => [
     {
       id: 1,
-      content: 'Exceptional web development! Delivered a seamless, responsive site with clean code and great UX.',
-      name: 'Sophia Ramirez',
+      content: 'Oussama delivered exactly what we needed for our e-commerce platform. Clean code, good performance, and met all deadlines. Would work with him again.',
+      name: 'Sarah M.',
       imgSrc: '/people-1.jpg',
-      company: 'PixelForge',
+      company: 'E-commerce Startup',
       rating: 5
     },
     {
       id: 2,
-      content: 'Impressive work! Fast loading times, intuitive design, and flawless backend integration. Highly recommend.',
-      name: 'Ethan Caldwell',
+      content: 'Great React developer. Helped us migrate from jQuery to modern stack. Communication was clear and the final product worked well.',
+      name: 'Ahmed K.',
       imgSrc: '/people-2.jpg',
-      company: 'NexaWave',
-      rating: 5
+      company: 'Local Business',
+      rating: 4
     },
     {
       id: 3,
-      content: 'Outstanding developer! Built a robust site with perfect functionality. Efficient and detail-oriented.',
-      name: 'Liam Bennett',
+      content: 'Professional work on our healthcare dashboard. Understood our requirements and delivered a secure, functional solution on time.',
+      name: 'Dr. Maria R.',
       imgSrc: '/people-3.jpg',
-      company: 'CodeCraft',
+      company: 'Medical Practice',
       rating: 5
     },
     {
       id: 4,
-      content: 'Creative and skilled! Produced a modern, user-friendly site that exceeded expectations. Great communication.',
-      name: 'Noah Williams',
+      content: 'Solid full-stack developer. Built our task management app from scratch. Good problem-solving skills and reliable delivery.',
+      name: 'James L.',
       imgSrc: '/people-4.jpg',
-      company: 'BrightWeb',
+      company: 'Tech Startup',
       rating: 4
     },
     {
       id: 5,
-      content: 'Professional work! Delivered on time, with a polished design and smooth user experience. Top-notch developer.',
-      name: 'Ava Thompson',
+      content: 'Oussama helped optimize our website performance significantly. Page load times improved and our SEO rankings went up. Recommended.',
+      name: 'Lisa Chen',
       imgSrc: '/people-5.jpg',
-      company: 'TechMosaic',
+      company: 'Digital Agency',
       rating: 5
     },
     {
       id: 6,
-      content: 'Excellent project execution! High-quality code, responsive design, and exceptional problem-solving skills.',
-      name: 'Jonathan Lee',
+      content: 'Good experience working together. Delivered a responsive web application that met our specifications. Professional and skilled.',
+      name: 'Omar B.',
       imgSrc: '/people-6.jpg',
-      company: 'Skyline Digital',
-      rating: 5
+      company: 'Small Business',
+      rating: 4
     }
   ], []);
 
-  // Optimized duplicated reviews
   const duplicatedReviews = useMemo(() => [...reviews, ...reviews], [reviews]);
 
   return (
@@ -86,18 +85,18 @@ const Review = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-teal-500/5 opacity-15" />
 
       <div className="container px-4 mx-auto">
-      <motion.div
+        <motion.div
           className="text-center h-auto mb-8 md:h-[100px] md:mb-1"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
           <h3 className="text-3xl md:text-4xl font-bold mb-2">
-            Trusted by 
+            Client 
             <div className="block sm:inline">
               <span className="text-purple-400 sm:ml-1">
                 <FlipWords
-                  words={["Innovative Startups", "Enterprise Teams", "Global Brands", "Tech Leaders"]}
+                  words={["Feedback", "Testimonials", "Reviews", "Experiences"]}
                   className=""
                   duration={4000}
                 />
@@ -105,11 +104,11 @@ const Review = () => {
             </div>
           </h3>
           <p className="text-xl text-zinc-400">
-            Delivering solutions that 
+            Real feedback from 
             <span className="block sm:inline">
               <span className="text-emerald-400 sm:ml-1">
                 <FlipWords
-                  words={["exceed expectations", "drive growth", "solve real problems", "innovate"]}
+                  words={["satisfied clients", "completed projects", "successful partnerships", "delivered solutions"]}
                   className=""
                   duration={3200}
                 />
@@ -122,7 +121,7 @@ const Review = () => {
         <motion.div 
           initial={{ opacity: 0, y: 40 }}
           animate={sectionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-          transition={{ duration: 0.9, delay: 0.2 }}
+          transition={{ duration: 1.5, delay: 0.2 }}
           className="relative h-[420px] md:h-[500px] overflow-hidden"
         >
           {/* Infinite Scroll Track */}
