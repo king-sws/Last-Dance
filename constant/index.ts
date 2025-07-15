@@ -2,6 +2,7 @@
 export const NAV_ITEMS = [
     { label: 'Home', link: '#home' },
     { label: 'About', link: '#about' },
+    { label: 'Blutto', link: '#blutto' },
     { label: 'Work', link: '#work' },
     { label: 'Reviews', link: '#reviews' },
     { label: 'Contact', link: '#contact', className: 'md:hidden' }

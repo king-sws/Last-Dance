@@ -7,6 +7,7 @@ import Work from './components/Work'
 import Review from './components/Review'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import BluttonProjectPage from './components/Blutto'
 
 const page = () => {
   return (
@@ -15,6 +16,7 @@ const page = () => {
       <Hero />
       <About />
       <Skills />
+      <BluttonProjectPage />
       <Work />
       <Review />
       <Contact />

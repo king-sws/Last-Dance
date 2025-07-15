@@ -9,7 +9,30 @@ import { useInView } from "react-intersection-observer";
 import GitHubShowcaseCard from "@/cards/GitHubShowcaseCard";
 import ProjectDialog from "./ProjectDialog"; 
 import { FlipWords } from "./ui/flip-words";
-import { ExternalLink, Github, Users, Zap, TrendingUp, ImageOff, Clock, Star, Code } from 'lucide-react';
+import { ExternalLink, Github, Users, Zap, TrendingUp, ImageOff, Clock, Star, Code, Filter } from 'lucide-react';
+
+// shadcn/ui imports
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Link from "next/link";
 
 // --- Type Definitions ---
 interface Project {
@@ -31,12 +54,126 @@ interface Project {
 
 interface WorkCardProps extends Project {
   index: number;
-  onProjectClick: (project: Project) => void; // Add this prop
+  onProjectClick: (project: Project) => void;
 }
 
-// --- EnhancedWorkCard Component ---
-const BASE_DELAY = 0.08;
+// --- Enhanced Project Metrics Component ---
+const ProjectMetrics = ({ metrics }: { metrics: Project['metrics'] }) => {
+  if (!metrics || !Object.values(metrics).some(Boolean)) return null;
 
+  const getCompletionValue = (completion: string): number => {
+    const value = parseInt(completion.replace('%', '')) || 0;
+    return Math.min(Math.max(value, 0), 100);
+  };
+
+  const getComplexityConfig = (complexity: string) => {
+    const configs = {
+      low: {
+        color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+        dot: 'bg-emerald-400'
+      },
+      medium: {
+        color: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+        dot: 'bg-amber-400'
+      },
+      high: {
+        color: 'bg-red-500/20 text-red-400 border-red-500/30',
+        dot: 'bg-red-400'
+      }
+    };
+    return configs[complexity?.toLowerCase() as keyof typeof configs] || configs.medium;
+  };
+
+  const getQualityConfig = (quality: string) => {
+    if (quality.includes('A+')) return { color: 'text-emerald-400', stars: 5 };
+    if (quality.includes('A')) return { color: 'text-blue-400', stars: 4 };
+    if (quality.includes('B')) return { color: 'text-amber-400', stars: 3 };
+    if (quality.includes('C')) return { color: 'text-orange-400', stars: 2 };
+    return { color: 'text-zinc-400', stars: 1 };
+  };
+
+  const MetricItem = ({ label, children, className = "" }: { 
+    label: string; 
+    children: React.ReactNode;
+    className?: string;
+  }) => (
+    <div className={`flex items-center justify-between py-2 border-b border-zinc-700/30 last:border-b-0 ${className}`}>
+      <span className="text-sm text-zinc-400 font-medium">{label}</span>
+      <div className="flex items-center gap-2">
+        {children}
+      </div>
+    </div>
+  );
+
+  const completionValue = metrics.completion ? getCompletionValue(metrics.completion) : 0;
+  const complexityConfig = metrics.complexity ? getComplexityConfig(metrics.complexity) : null;
+  const qualityConfig = metrics.quality ? getQualityConfig(metrics.quality) : null;
+
+  return (
+    <Card className="bg-zinc-800/50 gap-4 border-zinc-700/50 backdrop-blur-sm transition-all duration-200 hover:bg-zinc-800/70 hover:border-zinc-600/50">
+      <CardHeader className="">
+        <CardTitle className="text-sm pt-4 font-semibold text-zinc-200 flex items-center gap-2">
+          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+          Project Metrics
+        </CardTitle>
+      </CardHeader>
+      
+      <CardContent className="space-y-1">
+        {metrics.completion && (
+          <MetricItem label="Completion">
+            <div className="flex items-center gap-3 min-w-0 flex-1 max-w-32">
+              <div className="flex-1 bg-zinc-700/50 rounded-full h-2 overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all duration-300"
+                  style={{ width: `${completionValue}%` }}
+                />
+              </div>
+              <span className="text-sm font-semibold text-emerald-400 tabular-nums min-w-fit">
+                {metrics.completion}
+              </span>
+            </div>
+          </MetricItem>
+        )}
+
+        {metrics.complexity && complexityConfig && (
+          <MetricItem label="Complexity">
+            <Badge 
+              variant="outline" 
+              className={`${complexityConfig.color} border text-xs font-medium px-2 py-1 flex items-center gap-1.5`}
+            >
+              <div className={`w-1.5 h-1.5 rounded-full ${complexityConfig.dot}`} />
+              {metrics.complexity}
+            </Badge>
+          </MetricItem>
+        )}
+
+        {metrics.quality && qualityConfig && (
+          <MetricItem label="Quality Score">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star 
+                    key={i}
+                    className={`h-3.5 w-3.5 ${
+                      i < qualityConfig.stars 
+                        ? `${qualityConfig.color} fill-current` 
+                        : 'text-zinc-600'
+                    }`} 
+                  />
+                ))}
+              </div>
+              <span className={`text-sm font-semibold ${qualityConfig.color} tabular-nums`}>
+                {metrics.quality}
+              </span>
+            </div>
+          </MetricItem>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+// --- Enhanced Work Card with shadcn/ui ---
 const EnhancedWorkCard = memo(({
   imgSrc,
   title,
@@ -49,7 +186,7 @@ const EnhancedWorkCard = memo(({
   category,
   industry,
   index,
-  onProjectClick // Add this prop
+  onProjectClick
 }: WorkCardProps) => {
   const [imageStatus, setImageStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
 
@@ -61,7 +198,6 @@ const EnhancedWorkCard = memo(({
     setImageStatus('error');
   }, []);
 
-  // Create project object for dialog
   const projectData: Project = {
     imgSrc,
     title,
@@ -76,287 +212,262 @@ const EnhancedWorkCard = memo(({
   };
 
   const cardVariants = {
-    hidden: {
-      opacity: 0,
-      y: 30,
-      scale: 0.98
-    },
+    hidden: { opacity: 0, y: 30, scale: 0.98 },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
       transition: {
         duration: 0.6,
-        delay: index * BASE_DELAY,
+        delay: index * 0.08,
         ease: [0.25, 0.1, 0.25, 1]
       }
     }
   };
 
-  const contentVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: (delayOffset: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: index * BASE_DELAY + delayOffset,
-        duration: 0.5,
-        ease: "easeOut"
-      }
-    })
-  };
-
   return (
     <motion.div
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-zinc-800/50 shadow-xl border border-zinc-700/50 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/10 hover:border-cyan-400/30 cursor-pointer"
       variants={cardVariants}
       initial="hidden"
       animate="visible"
-      whileHover={{
-        y: -8,
-        transition: { duration: 0.3, ease: "easeOut" }
-      }}
-      onClick={() => onProjectClick(projectData)} // Add click handler for dialog
+      whileHover={{ y: -8, transition: { duration: 0.3, ease: "easeOut" } }}
+      className="h-full"
     >
-      {/* Image Container */}
-      <div className="relative h-48 w-full overflow-hidden bg-zinc-900">
-        {imageStatus === 'loading' && (
-          <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/70 animate-pulse">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
-          </div>
-        )}
-
-        {imageStatus === 'error' ? (
-          <div className="flex h-full w-full items-center justify-center bg-zinc-900/70 text-zinc-500">
-            <div className="text-center">
-              <ImageOff className="mx-auto h-8 w-8 mb-2" />
-              <div className="text-sm font-medium">Image not available</div>
+      <Card className="group relative h-full overflow-hidden bg-zinc-800/50 border-zinc-700/50 hover:border-cyan-400/30 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 cursor-pointer">
+        {/* Image Container */}
+        <div 
+          className="relative h-48 w-full overflow-hidden bg-zinc-900"
+          onClick={() => onProjectClick(projectData)}
+        >
+          {imageStatus === 'loading' && (
+            <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/70 animate-pulse">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
             </div>
+          )}
+
+          {imageStatus === 'error' ? (
+            <div className="flex h-full w-full items-center justify-center bg-zinc-900/70 text-zinc-500">
+              <div className="text-center">
+                <ImageOff className="mx-auto h-8 w-8 mb-2" />
+                <div className="text-sm font-medium">Image not available</div>
+              </div>
+            </div>
+          ) : (
+            <img
+              src={imgSrc}
+              alt={`Screenshot of ${title} project`}
+              onLoad={handleImageLoad}
+              onError={handleImageError}
+              className={`h-full w-full object-cover transition-all duration-500 group-hover:scale-105 ${
+                imageStatus === 'loaded' ? 'opacity-100' : 'opacity-0'
+              }`}
+              loading={index < 3 ? 'eager' : 'lazy'}
+            />
+          )}
+
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-zinc-900/20" />
+
+          {/* Category & Industry Badges */}
+          <div className="absolute top-4 left-4 right-4 flex justify-between">
+            <Badge variant="secondary" className="bg-cyan-400/20 text-cyan-300 border-cyan-400/30 backdrop-blur-sm">
+              {category}
+            </Badge>
+            <Badge variant="outline" className="bg-zinc-700/60 text-zinc-300 border-zinc-600/40 backdrop-blur-sm">
+              {industry}
+            </Badge>
           </div>
-        ) : (
-          <img
-            src={imgSrc}
-            alt={`Screenshot of ${title} project`}
-            onLoad={handleImageLoad}
-            onError={handleImageError}
-            className={`h-full w-full object-cover transition-all duration-500 group-hover:scale-105 ${
-              imageStatus === 'loaded' ? 'opacity-100' : 'opacity-0'
-            }`}
-            loading={index < 3 ? 'eager' : 'lazy'}
-          />
-        )}
 
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-zinc-900/20" />
-
-        {/* Category Badge */}
-        <motion.div
-          className="absolute left-4 top-4"
-          variants={contentVariants}
-          initial="hidden"
-          animate="visible"
-          custom={0.1}
-        >
-          <span className="inline-flex items-center rounded-full bg-cyan-400/20 px-3 py-1.5 text-xs font-semibold text-cyan-300 ring-1 ring-cyan-400/30 backdrop-blur-sm">
-            {category}
-          </span>
-        </motion.div>
-
-        {/* Industry Badge */}
-        <motion.div
-          className="absolute right-4 top-4"
-          variants={contentVariants}
-          initial="hidden"
-          animate="visible"
-          custom={0.15}
-        >
-          <span className="inline-flex items-center rounded-full bg-zinc-700/60 px-3 py-1.5 text-xs font-semibold text-zinc-300 ring-1 ring-zinc-600/40 backdrop-blur-sm">
-            {industry}
-          </span>
-        </motion.div>
-
-        {/* Click indicator overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        
-        {/* Subtle "click to view" indicator */}
-        <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="bg-zinc-900/80 backdrop-blur-sm rounded-full p-2">
-            <ExternalLink className="h-4 w-4 text-cyan-400" />
+          {/* Click indicator */}
+          <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="bg-zinc-900/80 backdrop-blur-sm rounded-full p-2">
+              <ExternalLink className="h-4 w-4 text-cyan-400" />
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Content Area */}
-      <div className="flex flex-1 flex-col p-6">
-        {/* Title */}
-        <motion.div
-          className="mb-3"
-          variants={contentVariants}
-          custom={0.2}
-        >
-          <h3 className="text-xl font-bold leading-tight text-zinc-100 group-hover:text-cyan-300 transition-colors duration-300">
+        {/* Card Content */}
+        <CardContent className="p-6  flex flex-col flex-1">
+          {/* Title */}
+          <CardTitle className="text-xl font-bold leading-tight text-zinc-100 group-hover:text-cyan-300 transition-colors duration-300 mb-3">
             {title}
-          </h3>
-        </motion.div>
+          </CardTitle>
 
-        {/* Description */}
-        <motion.div
-          className="mb-4"
-          variants={contentVariants}
-          custom={0.25}
-        >
-          <p className="text-sm leading-relaxed text-zinc-400 line-clamp-3">
+          {/* Description */}
+          <p className="text-sm leading-relaxed text-zinc-400 line-clamp-3 mb-4">
             {description}
           </p>
-        </motion.div>
 
-        {/* Tags Section */}
-        <motion.div
-          className="mb-4"
-          variants={contentVariants}
-          custom={0.28}
-        >
-          <div className="flex flex-wrap gap-2">
-            {tags.slice(0, 3).map((tag, tagIndex) => (
-              <motion.span
-                key={tag}
-                className="inline-flex items-center rounded-md bg-purple-400/10 px-2.5 py-1 text-xs font-medium text-purple-300 ring-1 ring-purple-400/20"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  delay: index * BASE_DELAY + 0.28 + tagIndex * 0.03,
-                  duration: 0.3
-                }}
-              >
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {tags.slice(0, 3).map((tag) => (
+              <Badge key={tag} variant="secondary" className="bg-purple-400/10 text-purple-300 border-purple-400/20">
                 {tag}
-              </motion.span>
+              </Badge>
             ))}
             {tags.length > 3 && (
-              <span className="inline-flex items-center rounded-md bg-zinc-700/50 px-2.5 py-1 text-xs font-medium text-zinc-400 ring-1 ring-zinc-600/40">
+              <Badge variant="outline" className="bg-zinc-700/50 text-zinc-400 border-zinc-600/40">
                 +{tags.length - 3}
-              </span>
+              </Badge>
             )}
           </div>
-        </motion.div>
 
-        {/* Primary Tech Stack */}
-        <motion.div
-          className="mb-5"
-          variants={contentVariants}
-          custom={0.3}
-        >
-          <div className="flex flex-wrap gap-2">
-            {primaryTech.slice(0, 4).map((tech, techIndex) => (
-              <motion.span
-                key={tech}
-                className="inline-flex items-center rounded-full bg-cyan-400/10 px-3 py-1.5 text-xs font-semibold text-cyan-400 ring-1 ring-cyan-400/20"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  delay: index * BASE_DELAY + 0.3 + techIndex * 0.05,
-                  duration: 0.3
-                }}
-              >
+          {/* Primary Tech Stack */}
+          <div className="flex flex-wrap gap-2 mb-5">
+            {primaryTech.slice(0, 4).map((tech) => (
+              <Badge key={tech} className="bg-cyan-400/10 text-cyan-400 border-cyan-400/20">
                 {tech}
-              </motion.span>
+              </Badge>
             ))}
             {primaryTech.length > 4 && (
-              <span className="inline-flex items-center rounded-full bg-zinc-700/50 px-3 py-1.5 text-xs font-medium text-zinc-400 ring-1 ring-zinc-600/40">
+              <Badge variant="outline" className="bg-zinc-700/50 text-zinc-400 border-zinc-600/40">
                 +{primaryTech.length - 4}
-              </span>
+              </Badge>
             )}
           </div>
-        </motion.div>
 
-        {/* Spacer */}
-        <div className="flex-1" />
+          {/* Spacer */}
+          <div className="flex-1" />
 
-        {/* Professional Metrics */}
-        {metrics && (Object.values(metrics).some(Boolean)) && (
-          <motion.div
-            className="mb-5 rounded-lg border border-zinc-700/30 bg-gradient-to-r from-zinc-800/20 to-zinc-800/40 p-4"
-            variants={contentVariants}
-            custom={0.4}
-          >
-            <div className="flex items-center justify-between gap-4">
-              {metrics.completion && (
-                <div className="flex items-center gap-2 text-center flex-1">
-                  <Clock className="h-4 w-4 text-emerald-400" />
-                  <div>
-                    <div className="text-sm font-semibold text-emerald-400">{metrics.completion}</div>
-                    <div className="text-xs text-zinc-500">Complete</div>
-                  </div>
-                </div>
-              )}
-              {metrics.complexity && (
-                <div className="flex items-center gap-2 text-center flex-1">
-                  <Code className="h-4 w-4 text-blue-400" />
-                  <div>
-                    <div className="text-sm font-semibold text-blue-400">{metrics.complexity}</div>
-                    <div className="text-xs text-zinc-500">Complexity</div>
-                  </div>
-                </div>
-              )}
-              {metrics.quality && (
-                <div className="flex items-center gap-2 text-center flex-1">
-                  <Star className="h-4 w-4 text-yellow-400" />
-                  <div>
-                    <div className="text-sm font-semibold text-yellow-400">{metrics.quality}</div>
-                    <div className="text-xs text-zinc-500">Quality</div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
+          {/* Project Metrics */}
+          <div className="mb-5">
+            <ProjectMetrics metrics={metrics} />
+          </div>
 
-        {/* Action Buttons */}
-        <motion.div
-          className="flex gap-3 mt-auto"
-          variants={contentVariants}
-          custom={0.45}
-        >
-          <a
-            href={projectLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()} // Prevent card click when clicking button
-            className="group flex-1 flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-400 px-4 py-3 text-sm font-semibold text-zinc-900 shadow-lg shadow-cyan-500/25 transition-all duration-300 hover:from-cyan-400 hover:to-cyan-300 hover:shadow-cyan-500/40 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
-            aria-label={`View live demo of ${title}`}
-          >
-            <ExternalLink className="h-4 w-4 transition-transform group-hover:scale-110" />
-            <span>Live Demo</span>
-          </a>
-
-          {githubLink && (
-            <a
-              href={githubLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()} // Prevent card click when clicking button
-              className="group flex items-center justify-center gap-2 rounded-lg border border-zinc-600 bg-zinc-700/50 px-4 py-3 text-sm font-semibold text-zinc-200 shadow-sm transition-all duration-300 hover:bg-zinc-600 hover:border-zinc-500 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
-              title="View Source Code"
-              aria-label={`View source code for ${title}`}
+          {/* Action Buttons */}
+          <div className="flex gap-3 mt-auto">
+            <Button 
+              asChild 
+              className="flex-1 bg-gradient-to-r from-cyan-500 to-cyan-400 hover:from-cyan-400 hover:to-cyan-300 text-zinc-900 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40"
             >
-              <Github className="h-4 w-4 transition-transform group-hover:scale-110" />
-              <span>Code</span>
-            </a>
-          )}
-        </motion.div>
-      </div>
+              <a 
+                href={projectLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                aria-label={`View live demo of ${title}`}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Live Demo
+              </a>
+            </Button>
 
-      {/* Subtle hover effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/3 via-transparent to-blue-500/3 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            {githubLink && (
+              <Button 
+                variant="outline" 
+                size="default"
+                asChild
+                className="border-zinc-600 bg-zinc-700/50 hover:bg-zinc-600 text-zinc-200 hover:text-white"
+              >
+                <a
+                  href={githubLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  title="View Source Code"
+                  aria-label={`View source code for ${title}`}
+                >
+                  <Github className="h-4 w-4" />
+                </a>
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 });
 
 EnhancedWorkCard.displayName = 'EnhancedWorkCard';
 
-// --- Work Component ---
+// --- Enhanced Filter Component ---
+const ProjectFilters = ({
+  activeFilter,
+  onFilterChange,
+  works
+}: {
+  activeFilter: string;
+  onFilterChange: (filter: string) => void;
+  works: Project[];
+}) => {
+  const mainFilters = ['All', 'React', 'Next.js', 'Fullstack'];
+  const categories = ['Frontend', 'Fullstack', 'Backend', 'Mobile'];
+  const industries = ['SaaS', 'Healthcare', 'Fintech', 'Social', 'EdTech/Career', 'Productivity', 'Hospitality'];
+
+  const getFilterCount = (filter: string) => {
+    if (filter === 'All') return works.length;
+    return works.filter(work =>
+      work.category === filter ||
+      work.primaryTech.includes(filter) ||
+      work.tags.includes(filter) ||
+      work.industry === filter
+    ).length;
+  };
+
+  return (
+    <div className="mb-8 sm:mb-12 space-y-4 sm:space-y-6 px-4 sm:px-0">
+      {/* Main Filters */}
+      <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
+        {mainFilters.map((filter) => (
+          <Button
+            key={filter}
+            variant={activeFilter === filter ? "default" : "outline"}
+            onClick={() => onFilterChange(filter)}
+            className={`transition-all text-sm sm:text-base px-3 sm:px-4 py-2 sm:py-2 ${
+              activeFilter === filter
+                ? 'bg-gradient-to-r from-cyan-400/20 to-cyan-500/20 text-cyan-300 border-cyan-400/50 hover:from-cyan-400/30 hover:to-cyan-500/30'
+                : 'bg-zinc-800/40 text-zinc-400 border-zinc-600/30 hover:bg-zinc-700/40 hover:border-zinc-500/50 hover:text-zinc-300'
+            }`}
+          >
+            <span className="hidden sm:inline">{filter}</span>
+            <span className="sm:hidden">
+              {filter === 'Next.js' ? 'Next' : filter}
+            </span>
+            <Badge variant="secondary" className="ml-1 sm:ml-2 text-xs bg-zinc-700/50 text-zinc-400 px-1 sm:px-2">
+              {getFilterCount(filter)}
+            </Badge>
+          </Button>
+        ))}
+      </div>
+
+      {/* Advanced Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-center">
+        <Select value={activeFilter} onValueChange={onFilterChange}>
+          <SelectTrigger className="w-full sm:w-48 bg-zinc-800/40 border-zinc-600/30 text-zinc-300 text-sm sm:text-base">
+            <Filter className="h-4 w-4 mr-2 flex-shrink-0" />
+            <SelectValue placeholder="Filter by category" />
+          </SelectTrigger>
+          <SelectContent className="bg-zinc-800 border-zinc-600">
+            <SelectItem value="All">All Categories</SelectItem>
+            {categories.map(category => (
+              <SelectItem key={category} value={category}>
+                {category} ({getFilterCount(category)})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={activeFilter} onValueChange={onFilterChange}>
+          <SelectTrigger className="w-full sm:w-48 bg-zinc-800/40 border-zinc-600/30 text-zinc-300 text-sm sm:text-base">
+            <Zap className="h-4 w-4 mr-2 flex-shrink-0" />
+            <SelectValue placeholder="Filter by industry" />
+          </SelectTrigger>
+          <SelectContent className="bg-zinc-800 border-zinc-600">
+            <SelectItem value="All">All Industries</SelectItem>
+            {industries.map(industry => (
+              <SelectItem key={industry} value={industry}>
+                {industry} ({getFilterCount(industry)})
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  );
+};
+
+// --- Main Work Component ---
 const Work = () => {
   const [activeFilter, setActiveFilter] = useState('All');
-  
-  // Dialog state - moved to the main component
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -366,9 +477,6 @@ const Work = () => {
     rootMargin: "-10px 0px -10px 0px",
   });
 
-  const mainFilters = ['All', 'React','Next.js', 'Fullstack' ];
-
-  // Dialog handlers
   const handleProjectClick = useCallback((project: Project) => {
     setSelectedProject(project);
     setIsDialogOpen(true);
@@ -379,7 +487,7 @@ const Work = () => {
     setTimeout(() => setSelectedProject(null), 200);
   }, []);
 
-  // Professional project data
+  // Professional project data (keeping your existing data)
 const works: Project[] = [
     {
     imgSrc: '/image/project-1.jpg',
@@ -388,7 +496,7 @@ const works: Project[] = [
     tags: ['Conversion Optimization', 'Modern UI/UX', 'Mobile-First'],
     primaryTech: ['Next.js', 'TypeScript', 'Framer Motion'],
     projectLink: 'https://saas-page-gamma.vercel.app/',
-    githubLink: 'https://github.com/yourusername/saas-landing-page',
+    githubLink: 'https://github.com/king-sws/Saas-page',
     category: 'Frontend',
     industry: 'Productivity',
     metrics: {
@@ -404,7 +512,7 @@ const works: Project[] = [
   tags: ['Enterprise UI', 'Conversion Optimization', 'Accessibility'],
   primaryTech: ['Next.js', 'TypeScript', 'Advanced CSS'],
   projectLink: 'https://dark-landing-page-rho.vercel.app/',
-  githubLink: 'https://github.com/yourusername/enterprise-productivity-landing',
+  githubLink: 'https://github.com/king-sws/Dark-Landing-Page',
   category: 'Frontend',
   industry: 'Productivity',
   metrics: {
@@ -420,7 +528,7 @@ const works: Project[] = [
     tags: ['Design Systems', 'Animation', 'Marketing Site', "Modern UI/UX"],
     primaryTech: ['React', 'Next.js', 'TypeScript', 'Framer Motion'],
     projectLink: 'https://modern-web-design-one.vercel.app/',
-    githubLink: 'https://github.com/yourusername/design-tool-landing',
+    githubLink: 'https://github.com/king-sws/Modern-Web',
     category: 'Frontend',
     industry: 'SaaS',
     metrics: {
@@ -430,13 +538,13 @@ const works: Project[] = [
     },
   },
   {
-    imgSrc: '/image/Robot.png',
+    imgSrc: '/image/Cover.png',
     title: 'HooBank - Modern FinTech Landing Page',
     description: 'Developed a sophisticated fintech landing page showcasing next-generation banking services with modern UI/UX principles. Built with React 18 and Tailwind CSS, featuring responsive design, smooth animations, and conversion-optimized user journeys. Implements contemporary financial service presentation with clean architecture and performance optimization.',
     tags: ['FinTech', 'Modern UI', 'Banking'],
     primaryTech: ['React 18', 'Tailwind CSS', 'Next.js'],
     projectLink: 'https://modern-web-ten.vercel.app/',
-    githubLink: 'https://github.com/yourusername/hoobank-fintech',
+    githubLink: 'https://github.com/king-sws/Robot',
     category: 'Frontend',
     industry: 'Fintech',
     metrics: {
@@ -446,7 +554,7 @@ const works: Project[] = [
     }
   },
   {
-    imgSrc: '/image/moo.jpeg',
+    imgSrc: '/image/Covers.png',
     title: 'Next.js Prototype Development Framework',
     description: 'Built a scalable Next.js development foundation with modern React architecture and TypeScript integration. Established project structure with optimized build configuration, Google Fonts integration, and deployment pipeline. Serves as a robust starting point for rapid prototype development and production-ready applications.',
     tags: ['Next.js Framework', 'TypeScript', 'Development Setup'],
@@ -462,7 +570,7 @@ const works: Project[] = [
     }
   },
   {
-    imgSrc: '/image/health.png',
+    imgSrc: '/image/healthcare.png',
     title: 'Healthcare Application Development Setup',
     description: 'Established foundation for a healthcare management system using Next.js with App Router architecture. Configured development environment with modern React patterns, TypeScript integration, and Geist font optimization. Project setup includes healthcare-focused folder structure and component architecture planning for medical data handling and appointment systems.',
     tags: ['Healthcare Setup', 'Next.js App Router', 'Medical Tech'],
@@ -484,7 +592,7 @@ const works: Project[] = [
     tags: ['Digital Library', 'Search Optimization', 'User Experience'],
     primaryTech: ['Next.js', 'React', 'JavaScript'],
     projectLink: 'https://bookify-gamma.vercel.app/',
-    githubLink: 'https://github.com/yourusername/bookify-digital-library',
+    githubLink: 'https://github.com/king-sws/Bookify',
     category: 'Fullstack',
     industry: 'SaaS',
     metrics: {
@@ -500,7 +608,7 @@ const works: Project[] = [
     tags: ['AI Integration', 'Authentication', 'Career Development'],
     primaryTech: ['Next.js', 'AI/ML APIs', 'Authentication'],
     projectLink: 'https://ai-interview-boot.vercel.app/',
-    githubLink: 'https://github.com/yourusername/prepwise-interview',
+    githubLink: 'https://github.com/king-sws/prepwise-interview',
     category: 'Fullstack',
     industry: 'EdTech/Career',
     metrics: {
@@ -516,7 +624,7 @@ const works: Project[] = [
     tags: ['Real-time', 'WebSockets', 'File Upload',],
     primaryTech: ['React', 'Socket.io', 'Node.js'],
     projectLink: 'https://s-chat-84b6.onrender.com/',
-    githubLink: 'https://github.com/yourusername/team-chat',
+    githubLink: 'https://github.com/king-sws/S-Chat',
     category: 'Fullstack',
     industry: 'Social',
     metrics: {
@@ -532,7 +640,7 @@ const works: Project[] = [
     tags: ['Next.js', 'Healthcare Analytics', 'Real-time Monitoring', 'HIPAA Compliance', 'Data Visualization'],
     primaryTech: ['React', 'Tailwind', 'Javascript'],
     projectLink: 'https://medical-six-teal.vercel.app/',
-    githubLink: 'https://github.com/yourusername/healthcare-dashboard',
+    githubLink: 'https://github.com/king-sws/Medical',
     category: 'Frontend',
     industry: 'Healthcare',
     metrics: {
@@ -548,7 +656,7 @@ const works: Project[] = [
     tags: ['React', 'Property Management', 'Real-time Booking', 'Payment Integration', 'Analytics Dashboard'],
     primaryTech: ['React', 'Tailwindcss', 'Shadcn'],
     projectLink: 'https://houses-eight-blond.vercel.app',
-    githubLink: 'https://github.com/yourusername/hotel-booking',
+    githubLink: 'https://github.com/king-sws/Houses',
     category: 'Frontend',
     industry: 'Productivity',
     metrics: {
@@ -564,7 +672,7 @@ const works: Project[] = [
     tags: ['CRM Software', 'Sales Analytics', 'Task Management', 'Team Collaboration', 'Subscription Management'],
     primaryTech: ['React', 'TypeScript', 'TailwindCss'],
     projectLink: 'https://crm-app-phi.vercel.app',
-    githubLink: 'https://github.com/yourusername/crm-dashboard',
+    githubLink: 'https://github.com/king-sws/crm-dashboard',
     category: 'Frontend',
     industry: 'SaaS',
     metrics: {
@@ -592,7 +700,6 @@ const works: Project[] = [
 
 ];
 
-  // Memoized filtering
   const filteredWorks = useMemo(() => {
     let filtered = works;
 
@@ -600,7 +707,8 @@ const works: Project[] = [
       filtered = filtered.filter(work =>
         work.category === activeFilter || 
         work.primaryTech.includes(activeFilter) || 
-        work.tags.includes(activeFilter)
+        work.tags.includes(activeFilter) ||
+        work.industry === activeFilter
       );
     }
     return filtered;
@@ -609,22 +717,6 @@ const works: Project[] = [
   const handleFilterChange = useCallback((filter: string) => {
     setActiveFilter(filter);
   }, []);
-
-  // Animation variants
-  const filterVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
@@ -638,11 +730,10 @@ const works: Project[] = [
     };
   }, []);
 
-
   return (
     <section id="work" className="sec py-24 bg-zinc-900/50 relative overflow-hidden">
       <div className="container px-4 sm:px-6 lg:px-8 mx-auto">
-        {/* Professional Header */}
+        {/* Enhanced Header with shadcn/ui */}
         <motion.div
           ref={headerRef}
           className="text-center mb-16"
@@ -663,64 +754,33 @@ const works: Project[] = [
             scalable architectures, and clean code principles.
           </p>
 
-          {/* Professional Portfolio Highlights */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <div className="text-center p-4 rounded-xl bg-gradient-to-br from-zinc-800/40 to-zinc-800/20 border border-zinc-700/30">
+          {/* Portfolio Stats Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            <Card className="p-4 gap-2 bg-zinc-800/40 border-zinc-700/30">
               <div className="text-2xl font-bold text-cyan-400 mb-1">13+</div>
               <div className="text-zinc-400 text-sm">Projects</div>
-            </div>
-            <div className="text-center p-4 rounded-xl bg-gradient-to-br from-zinc-800/40 to-zinc-800/20 border border-zinc-700/30">
+            </Card>
+            <Card className="p-4 gap-2 bg-zinc-800/40 border-zinc-700/30">
               <div className="text-2xl font-bold text-emerald-400 mb-1">95%</div>
               <div className="text-zinc-400 text-sm">Avg Quality</div>
-            </div>
-            <div className="text-center p-4 rounded-xl bg-gradient-to-br from-zinc-800/40 to-zinc-800/20 border border-zinc-700/30">
+            </Card>
+            <Card className="p-4 gap-2 bg-zinc-800/40 border-zinc-700/30">
               <div className="text-2xl font-bold text-blue-400 mb-1">5</div>
               <div className="text-zinc-400 text-sm">Tech Stacks</div>
-            </div>
-            <div className="text-center p-4 rounded-xl bg-gradient-to-br from-zinc-800/40 to-zinc-800/20 border border-zinc-700/30">
+            </Card>
+            <Card className="p-4 gap-2 bg-zinc-800/40 border-zinc-700/30">
               <div className="text-2xl font-bold text-purple-400 mb-1">100%</div>
               <div className="text-zinc-400 text-sm">Responsive</div>
-            </div>
+            </Card>
           </div>
         </motion.div>
 
         {/* Enhanced Filter System */}
-        <motion.div
-          className="mb-12 flex flex-col items-center"
-          initial="hidden"
-          animate={headerInView ? "visible" : "hidden"}
-          variants={containerVariants}
-        >
-          {/* Main Category Filters */}
-          <div className="flex flex-wrap gap-3 mb-4 justify-center">
-            {mainFilters.map((filter) => (
-              <motion.button
-                key={filter}
-                onClick={() => handleFilterChange(filter)}
-                variants={filterVariants}
-                className={`px-6 py-3 rounded-full text-sm font-semibold transition-all backdrop-blur-sm shadow-lg border
-                  ${activeFilter === filter
-                    ? 'bg-gradient-to-r from-cyan-400/20 to-cyan-500/20 text-cyan-300 border-cyan-400/50 shadow-cyan-400/20'
-                    : 'bg-zinc-800/40 text-zinc-400 hover:bg-zinc-700/40 border-zinc-600/30 hover:border-zinc-500/50 hover:text-zinc-300'
-                  }`}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                aria-pressed={activeFilter === filter}
-              >
-                {filter}
-                {filter !== 'All' && (
-                  <span className="ml-2 text-xs opacity-60">
-                    ({works.filter(work => 
-                      work.category === filter || 
-                      work.primaryTech.includes(filter) || 
-                      work.tags.includes(filter)
-                    ).length})
-                  </span>
-                )}
-              </motion.button>
-            ))}
-          </div>          
-        </motion.div>
+        <ProjectFilters 
+          activeFilter={activeFilter}
+          onFilterChange={handleFilterChange}
+          works={works}
+        />
 
         {/* Projects Grid */}
         <AnimatePresence mode="wait">
@@ -738,7 +798,7 @@ const works: Project[] = [
                   {...project} 
                   key={project.title} 
                   index={i}
-                  onProjectClick={handleProjectClick} // Pass the actual function
+                  onProjectClick={handleProjectClick}
                 />
               ))}
 
@@ -762,28 +822,62 @@ const works: Project[] = [
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
-              className="text-center text-zinc-500 py-16"
+              className="text-center py-16"
             >
-              <p className="text-xl font-semibold mb-4">No projects found for "{activeFilter}"</p>
-              <p className="mb-6">Try adjusting your filters or view all projects.</p>
-              <button
-                onClick={() => handleFilterChange('All')}
-                className="px-6 py-3 rounded-full bg-gradient-to-r from-cyan-400/20 to-cyan-500/20 text-cyan-300 border border-cyan-400/50 hover:from-cyan-400/30 hover:to-cyan-500/30 transition-all duration-300"
-              >
-                View All Projects
-              </button>
+              <Card className="max-w-md mx-auto bg-zinc-800/40 border-zinc-700/30">
+                <CardContent className="p-8">
+                  <p className="text-xl font-semibold mb-4 text-zinc-300">
+                    No projects found for "{activeFilter}"
+                  </p>
+                  <p className="mb-6 text-zinc-500">
+                    Try adjusting your filters or view all projects.
+                  </p>
+                  <Button
+                    onClick={() => handleFilterChange('All')}
+                    className="bg-gradient-to-r from-cyan-400/20 to-cyan-500/20 text-cyan-300 border-cyan-400/50 hover:from-cyan-400/30 hover:to-cyan-500/30"
+                  >
+                    View All Projects
+                  </Button>
+                </CardContent>
+              </Card>
             </motion.div>
           )}
         </AnimatePresence>
+
+        <Separator className="my-16 bg-zinc-700/50" />
+
+        {/* Additional Professional Section */}
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <h3 className="text-2xl font-bold text-zinc-100 mb-4">
+            Ready to Build Something Amazing?
+          </h3>
+          <p className="text-zinc-400 mb-6 max-w-2xl mx-auto">
+            Let's collaborate on your next project. I specialize in creating scalable, 
+            user-focused applications using modern technologies.
+          </p>
+          <Button 
+            size="lg"
+            className="bg-gradient-to-r from-cyan-500 to-cyan-400 hover:from-cyan-400 hover:to-cyan-300 text-zinc-900 shadow-lg shadow-cyan-500/25"
+          >
+            <Link href={"#contact"} className="flex items-center gap-2">
+            <Users className="h-5 w-5 mr-2" />
+            Let's Work Together
+            </Link>
+          </Button>
+        </motion.div>
       </div>
 
-      {/* Add the ProjectDialog component here */}
+      {/* Project Dialog */}
       <ProjectDialog
         project={selectedProject}
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
       />
-
     </section>
   );
 };
