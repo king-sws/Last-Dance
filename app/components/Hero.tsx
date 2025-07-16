@@ -169,12 +169,12 @@ const Hero = () => {
                         { 
                           name: "Full Stack CV", 
                           desc: "Complete work history and skills", 
-                          path: "/Last-dance Full ULTRA.pdf" 
+                          path: "/Full-stack BF.pdf" 
                         },
                         { 
                           name: "Front End CV", 
                           desc: "Developer-focused experience", 
-                          path: "/Last-dance ULTRA.pdf" 
+                          path: "/Frontend BF.pdf" 
                         }
                       ].map((option, index) => (
                         <a

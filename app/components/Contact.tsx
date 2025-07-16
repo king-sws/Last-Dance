@@ -1,10 +1,11 @@
 'use client';
 
 import { HiPaperAirplane, HiPhone, HiMail, HiLocationMarker, HiX } from "react-icons/hi";
-import { FiGithub, FiLinkedin, FiTwitter, FiInstagram } from "react-icons/fi";
+import { FiGithub, FiLinkedin } from "react-icons/fi";
 import { FlipWords } from "./ui/flip-words";
 import { motion } from "framer-motion";
 import { ReactElement, useState } from "react";
+import { Building2 } from "lucide-react";
 
 interface SocialLink {
   href: string;
@@ -34,15 +35,11 @@ const Contact = () => {
       label: 'LinkedIn',
     },
     {
-      href: 'https://twitter.com/yourprofile',
-      icon: <FiTwitter className="text-xl" />,
-      label: 'Twitter',
+      href: 'https://blutto.vercel.app/',
+      icon: <Building2 className="text-xl" />,
+      label: 'Blutto',
     },
-    {
-      href: 'https://instagram.com/yourprofile',
-      icon: <FiInstagram className="text-xl" />,
-      label: 'Instagram',
-    },
+    
   ];
 
   const openDialog = () => setIsDialogOpen(true);

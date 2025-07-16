@@ -582,7 +582,7 @@ const works: Project[] = [
     metrics: {
       completion: '95%',
       complexity: 'High Potential',
-      quality: 'Foundation',
+      quality: 'A',
     },
   },
   {
