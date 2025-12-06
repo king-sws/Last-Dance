@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { FlipWords } from "./ui/flip-words";
 import ReviewCard from "@/cards/ReviewCard";
@@ -16,6 +16,8 @@ interface ReviewData {
 }
 
 const Review = () => {
+  const [isPaused, setIsPaused] = useState(false);
+  
   const { ref: sectionRef, inView: sectionInView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -74,6 +76,7 @@ const Review = () => {
     }
   ], []);
 
+  // Only duplicate twice instead of 4 times for better performance
   const duplicatedReviews = useMemo(() => [...reviews, ...reviews], [reviews]);
 
   return (
@@ -126,8 +129,17 @@ const Review = () => {
         >
           {/* Infinite Scroll Track */}
           <div className="absolute inset-0 flex items-center w-full">
-            <div className="animate-infinite-scroll flex gap-6 md:gap-8 w-max">
-              {[...duplicatedReviews, ...duplicatedReviews].map((review, index) => (
+            <div 
+              className="flex gap-6 md:gap-8 w-max animate-infinite-scroll"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+              style={{
+                willChange: 'transform',
+                transform: 'translateZ(0)', // Force GPU acceleration
+                animationPlayState: isPaused ? 'paused' : 'running'
+              }}
+            >
+              {duplicatedReviews.map((review, index) => (
                 <div 
                   key={`${review.id}-${index}`}
                   className="w-[300px] sm:w-[320px] lg:w-[380px] flex-shrink-0"
@@ -138,8 +150,8 @@ const Review = () => {
             </div>
           </div>
 
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,_rgba(24,24,27,1)_0%,_rgba(24,24,27,0)_10%,_rgba(24,24,27,0)_90%,_rgba(24,24,27,1)_100%)]" />
+          {/* Gradient Overlay - pointer-events-none to allow hover through */}
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,_rgba(24,24,27,1)_0%,_rgba(24,24,27,0)_10%,_rgba(24,24,27,0)_90%,_rgba(24,24,27,1)_100%)] pointer-events-none" />
         </motion.div>
       </div>
     </section>

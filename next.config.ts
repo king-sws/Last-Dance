@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     domains: [
       'skillicons.dev', 
       'user-images.githubusercontent.com',
+      "ui.shadcn.com",
       'camo.githubusercontent.com'  // Added this domain
     ],
   },

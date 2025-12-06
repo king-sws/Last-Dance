@@ -26,6 +26,11 @@ const Skills = () => {
               desc: 'UI/UX Design & Prototyping' 
             },
             { 
+        imgSrc: '/icons8-adobe-xd.svg', 
+        label: 'Adobe XD', 
+        desc: 'Design & Prototyping Tool' 
+      },
+            { 
               imgSrc: 'html-5.svg', 
               label: 'HTML', 
               desc: 'Semantic Web Structure' 
@@ -35,6 +40,21 @@ const Skills = () => {
               label: 'CSS', 
               desc: 'Modern Layouts & Animations' 
             },
+            { 
+        imgSrc: '/icons8-sass.svg', 
+        label: 'Sass', 
+        desc: 'CSS Preprocessing' 
+      },
+            { 
+        imgSrc: '/icons8-material-ui.svg', 
+        label: 'Material-UI', 
+        desc: 'React Component Library' 
+      },
+            { 
+        imgSrc: '/icons8-framer-logo-96.png', 
+        label: 'Framer',
+        desc: 'React Component Library' 
+      },
           ]
         },
         {
@@ -66,15 +86,35 @@ const Skills = () => {
               desc: 'Utility-First Styling' 
             },
             { 
+        imgSrc: '/icons8-webpack.svg', 
+        label: 'Webpack', 
+        desc: 'Module Bundler' 
+      },
+            { 
               imgSrc: 'https://user-images.githubusercontent.com/958486/218346783-72be5ae3-b953-4dd7-b239-788a882fdad6.svg', 
               label: 'Zustand', 
               desc: 'Lightweight State Management' 
             },
-            // { 
-            //   imgSrc: 'shadcn.jpg', 
-            //   label: 'Shadcn UI', 
-            //   desc: 'Accessible Component Library',
-            // },
+             { 
+        imgSrc: '/Redux--Streamline-Svg-Logos.svg', 
+        label: 'Redux', 
+        desc: 'Predictable State Container' 
+      },
+            { 
+        imgSrc: '/React-Query-Icon--Streamline-Svg-Logos.svg', 
+        label: 'React Query', 
+        desc: 'Server State Management' 
+      },
+      { 
+        imgSrc: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jest/jest-plain.svg', 
+        label: 'Jest', 
+        desc: 'Delightful JavaScript Testing' 
+      },
+            { 
+        imgSrc: 'https://ui.shadcn.com/apple-touch-icon.png', 
+        label: 'Shadcn UI', 
+        desc: 'Beautifully Designed Components' 
+      }
           ]
         },
         {
@@ -106,6 +146,16 @@ const Skills = () => {
               desc: 'Type-Safe Database Client' 
             },
             { 
+        imgSrc: '/Drizzle--Streamline-Simple-Icons.svg', 
+        label: 'Drizzle ORM', 
+        desc: 'TypeScript ORM' 
+      },
+            { 
+              imgSrc: 'icons8-redis.svg', 
+              label: 'Redis', 
+              desc: 'In-Memory Data Store'  
+            },
+            { 
               imgSrc: 'mongodb.svg', 
               label: 'MongoDB', 
               desc: 'NoSQL Database Design' 
@@ -115,6 +165,21 @@ const Skills = () => {
               label: 'MySQL', 
               desc: 'Rslational database' 
             },
+            { 
+        imgSrc: '/icons8-postgresql.svg', 
+        label: 'PostgreSQL', 
+        desc: 'Advanced Relational Database' 
+      },
+      { 
+        imgSrc: '/icons8-firebase.svg', 
+        label: 'Firebase', 
+        desc: 'Backend-as-a-Service Platform' 
+      },
+      { 
+        imgSrc: '/icons8-supabase.svg', 
+        label: 'Supabase', 
+        desc: 'Open Source Firebase Alternative' 
+      },
           ]
         }
       ];
