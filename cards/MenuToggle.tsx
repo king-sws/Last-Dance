@@ -18,15 +18,14 @@ const MenuToggle = memo(({ navOpen, setNavOpen }: MenuToggleProps) => (
     >
       Contact Me
     </Link>
+    {/* Technical Toggle: Minimalist approach */}
     <button
-      className="md:hidden p-2 text-zinc-300 hover:text-cyan-400 transition-colors relative focus:outline-none"
+      className="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-[4px] focus:outline-none"
       onClick={() => setNavOpen(!navOpen)}
-      aria-label={`${navOpen ? "Close" : "Open"} navigation menu`}
-      aria-expanded={navOpen}
     >
-      <span className="material-symbols-outlined text-3xl">
-        {navOpen ? <BiX /> : <BiMenu /> }
-      </span>
+      <span className={`h-[1px] bg-[#ffe1c1] transition-all duration-300 ${navOpen ? "w-5 rotate-45 translate-y-[5px]" : "w-6"}`} />
+      <span className={`h-[1px] bg-[#ffe1c1] transition-all duration-300 ${navOpen ? "opacity-0" : "w-4 self-end"}`} />
+      <span className={`h-[1px] bg-[#ffe1c1] transition-all duration-300 ${navOpen ? "w-5 -rotate-45 -translate-y-[5px]" : "w-6"}`} />
     </button>
   </div>
 ));

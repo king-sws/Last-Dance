@@ -58,8 +58,8 @@ export const TypeWriter: FC<TypeWriterProps> = ({ text, className, speed = 50, d
 
   return (
     <span className={className}>
-      {displayText}
-      <span className="animate-blink ml-0.5">|</span>
-    </span>
+    {displayText}
+    <span className="animate-blink ml-1 border-l border-[#ffe1c1] h-full" />
+  </span>
   );
 };

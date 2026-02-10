@@ -1,10 +1,11 @@
-'use client'
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FaAngleRight, FaGithub, FaLinkedin, FaTwitter, FaInstagram, FaCodepen } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaTwitter, FaInstagram, FaCodepen } from "react-icons/fa";
+import { FiArrowUpRight, FiArrowUp } from "react-icons/fi";
 
-// Define types for our navigation items
 interface NavItem {
   label: string;
   href: string;
@@ -15,131 +16,106 @@ interface SocialItem extends NavItem {
 }
 
 const Footer: React.FC = () => {
-  // Memoize static data
   const sitemap: NavItem[] = React.useMemo(() => [
     { label: 'Home', href: '#home' },
     { label: 'About', href: '#about' },
     { label: 'Work', href: '#work' },
     { label: 'Reviews', href: '#reviews' },
-    { label: 'Contact me', href: '#contact' }
+    { label: 'Contact', href: '#contact' }
   ], []);
  
   const socials: SocialItem[] = React.useMemo(() => [
-    {
-      label: 'GitHub',
-      href: 'https://www.github.com/king-sws',
-      icon: <FaGithub className="text-lg" />
-    },
-    {
-      label: 'LinkedIn',
-      href: 'https://www.linkedin.com/in/oussama-boufi',
-      icon: <FaLinkedin className="text-lg" />
-    },
-    {
-      label: 'Twitter X',
-      href: 'https://x.com/codewithsadee_',
-      icon: <FaTwitter className="text-lg" />
-    },
-    {
-      label: 'Instagram',
-      href: 'https://www.instagram.com/oussama-boufi',
-      icon: <FaInstagram className="text-lg" />
-    },
-    {
-      label: 'CodePen',
-      href: 'https://codepen.io/oussama-boufi',
-      icon: <FaCodepen className="text-lg" />
-    }
+    { label: 'GitHub', href: 'https://www.github.com/king-sws', icon: <FaGithub /> },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/oussama-boufi', icon: <FaLinkedin /> },
+    { label: 'Instagram', href: 'https://www.instagram.com/oussama-boufi', icon: <FaInstagram /> },
+    { label: 'CodePen', href: 'https://codepen.io/oussama-boufi', icon: <FaCodepen /> }
   ], []);
   
   const currentYear = React.useMemo(() => new Date().getFullYear(), []);
   
   return (
-    <footer className="bg-zinc-900 pt-16 pb-6 mt-20 border-t border-zinc-800">
+    <footer className="bg-zinc-950 pt-24 px-6 sm:px-10 pb-12 border-t border-zinc-900">
       <div className="container mx-auto px-4">
-        {/* Top section */}
-        <div className="lg:grid lg:grid-cols-2 gap-10">
-          {/* CTA Section */}
-          <div className="mb-12 lg:mb-0">
-            <h2 className="text-2xl font-bold headline-2 mb-6 lg:max-w-xs">Let&apos;s work together today!</h2>
-            <p className="text-zinc-400 mb-8 max-w-md">Have a project in mind? Let&apos;s collaborate and bring your ideas to life with creative solutions.</p>
+        
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-24">
+          
+          {/* Brand & CTA - 5 Cols */}
+          <div className="md:col-span-5 space-y-8">
+            <Link href="/" className="inline-block grayscale brightness-200">
+              <Image src="/logo.svg" alt="Logo" width={32} height={32} />
+            </Link>
+            
+            <h2 className="text-4xl font-bold text-white tracking-tighter leading-tight">
+              Ready to deploy your <br />
+              <span className="italic font-serif font-light text-[#ffe1c1]">next big idea?</span>
+            </h2>
+
             <Link 
               href="mailto:oboufi88@gmail.com"
-              className="inline-flex items-center gap-2 px-6 py-3 btn-secondary border border-cyan-500 font-medium rounded-lg transition-transform duration-300 hover:translate-y-1"
+              className="group inline-flex items-center gap-4 bg-[#ffe1c1] text-black px-8 py-4 rounded-full font-bold text-xs uppercase tracking-widest transition-transform hover:scale-105"
             >
-              Start project <FaAngleRight />
+              Start_Project <FiArrowUpRight className="text-lg group-hover:rotate-45 transition-transform" />
             </Link>
           </div>
-          
-          {/* Links Section */}
-          <div className="grid grid-cols-2 gap-10">
-            {/* Sitemap */}
-            <nav aria-label="Footer navigation">
-              <p className="text-white font-medium mb-4 uppercase text-sm tracking-wider">Sitemap</p>
-              <ul className="space-y-2">
-                {sitemap.map((item) => (
-                  <li key={item.label}>
-                    <Link 
-                      href={item.href} 
-                      className="text-zinc-400 hover:text-cyan-500 transition-colors duration-300 flex items-center gap-1 group"
-                    >
-                      <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity">&#9656;</span> {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-            
-            {/* Social Links */}
-            <div>
-              <p className="text-white font-medium mb-4 uppercase text-sm tracking-wider">Socials</p>
-              <ul className="space-y-2">
-                {socials.map((item) => (
-                  <li key={item.label}>
-                    <Link 
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer" 
-                      className="text-zinc-400 hover:text-cyan-500 transition-colors duration-300 flex items-center gap-2"
-                    >
-                      {item.icon} <span>{item.label}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+
+          {/* Spacer - 1 Col */}
+          <div className="hidden md:block md:col-span-1" />
+
+          {/* Sitemap - 3 Cols */}
+          <div className="md:col-span-3">
+            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-600 mb-8">Navigation_System</p>
+            <ul className="space-y-4">
+              {sitemap.map((item) => (
+                <li key={item.label}>
+                  <Link 
+                    href={item.href} 
+                    className="text-zinc-400 hover:text-white transition-colors flex items-center gap-2 group text-sm"
+                  >
+                    <span className="w-0 h-[1px] bg-[#ffe1c1] group-hover:w-4 transition-all" />
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Socials - 3 Cols */}
+          <div className="md:col-span-3">
+            <p className="text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-600 mb-8">External_Nodes</p>
+            <ul className="space-y-4">
+              {socials.map((item) => (
+                <li key={item.label}>
+                  <Link 
+                    href={item.href}
+                    target="_blank"
+                    className="text-zinc-400 hover:text-white transition-colors flex items-center gap-3 text-sm group"
+                  >
+                    <span className="text-zinc-600 group-hover:text-[#ffe1c1] transition-colors">{item.icon}</span>
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
-        
-        {/* Divider */}
-        <div className="h-px bg-zinc-800 my-7"></div>
-        
-        {/* Bottom section */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Logo */}
-          <Link href="/" className="mb-4 sm:mb-0" aria-label="Go to homepage">
-            <Image 
-              src="/logo.svg" 
-              alt="Oussama Logo" 
-              width={40} 
-              height={40} 
-              className="hover:opacity-80 transition-opacity"
-              priority={false}
-            />
-          </Link>
+
+        {/* Footer Bottom */}
+        <div className="pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-6 text-[10px] font-mono text-zinc-600 uppercase tracking-[0.2em]">
+            <span>&copy; {currentYear} Oussama_Boufi</span>
+            <span className="hidden md:block w-1 h-1 bg-zinc-800 rounded-full" />
+            <span className="hidden md:block text-zinc-800">Status: Fully_Functional</span>
+          </div>
           
-          {/* Copyright */}
-          <p className="text-sm text-zinc-500">
-            &copy; {currentYear} <span className="text-zinc-300">Oussama Boufi</span> • All Rights Reserved
-          </p>
-          
-          {/* Back to top */}
           <Link 
-            href="#top" 
-            className="hidden sm:flex items-center gap-1 text-zinc-400 hover:text-white transition-colors text-sm mt-4 sm:mt-0"
-            aria-label="Back to top"
+            href="#home" 
+            className="group flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-[10px] font-mono uppercase tracking-widest"
           >
-            Back to top <span className="text-xl">↑</span>
+            Back_To_Top 
+            <div className="w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center group-hover:border-white transition-colors">
+              <FiArrowUp />
+            </div>
           </Link>
         </div>
       </div>

@@ -1,105 +1,81 @@
 "use client"
 import { memo, forwardRef, useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { NAV_ITEMS, throttle } from "@/constant";
+import { NAV_ITEMS } from "@/constant";
 
-interface NavbarProps {
-  navOpen: boolean;
-  onLinkClick: () => void;
-}
-
-const Navbar = memo(({ navOpen, onLinkClick }: NavbarProps) => {
+const Navbar = memo(({ navOpen, onLinkClick, scrolled }: any) => {
   const [activeLink, setActiveLink] = useState('#home');
   const activeBoxRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
 
   const updateActiveBox = useCallback((target: HTMLElement | null) => {
-    if (!activeBoxRef.current || !target) return;
+    if (!activeBoxRef.current || !target || window.innerWidth < 768) return;
+    const { offsetLeft, offsetWidth } = target;
     
-    const { offsetLeft, offsetTop, offsetWidth, offsetHeight } = target;
-    activeBoxRef.current.style.transform = `translate(${offsetLeft}px, ${offsetTop}px)`;
+    // Desktop: Sleek 2px bottom bar instead of a box shadow
+    activeBoxRef.current.style.opacity = "1";
+    activeBoxRef.current.style.transform = `translateX(${offsetLeft}px)`;
     activeBoxRef.current.style.width = `${offsetWidth}px`;
-    activeBoxRef.current.style.height = `${offsetHeight}px`;
   }, []);
 
   const handleNavClick = useCallback((e: React.MouseEvent, link: string) => {
-    e.preventDefault();
     onLinkClick();
     setActiveLink(link);
-    updateActiveBox(e.currentTarget as HTMLElement);
-    document.querySelector(link)?.scrollIntoView({ behavior: 'smooth' });
-  }, [onLinkClick, updateActiveBox]);
+    const element = document.querySelector(link);
+    if (element) {
+      const offset = 100;
+      window.scrollTo({ top: element.getBoundingClientRect().top + window.pageYOffset - offset, behavior: "smooth" });
+    }
+  }, [onLinkClick]);
 
   useEffect(() => {
-    const activeElement = navRef.current?.querySelector(`[href="${activeLink}"]`);
-    const handleResize = () => updateActiveBox(activeElement as HTMLElement);
-    
-    const ro = new ResizeObserver(throttle(handleResize, 100));
-    if (activeElement) ro.observe(activeElement);
-    
-    updateActiveBox(activeElement as HTMLElement);
-    return () => ro.disconnect();
-  }, [activeLink, updateActiveBox]);
+    const activeElement = navRef.current?.querySelector(`[href="${activeLink}"]`) as HTMLElement;
+    if (activeElement) updateActiveBox(activeElement);
+  }, [activeLink, updateActiveBox, scrolled]);
 
   return (
     <nav 
       ref={navRef}
-      className={`fixed md:static top-20 left-0 w-full md:w-auto bg-zinc-900 md:bg-transparent transition-transform duration-300 ${
-        navOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-      }`}
-      aria-label="Main navigation"
+      className={`
+        fixed top-24 left-4 right-4 p-4 bg-zinc-950/95 border border-zinc-900 rounded-xl transition-all duration-500
+        md:relative md:top-0 md:left-0 md:right-0 md:p-0 md:bg-transparent md:border-0 md:flex md:opacity-100 md:pointer-events-auto
+        ${navOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none md:translate-y-0'}
+      `}
     >
-      <div className="container md:block py-4 md:py-0">
-        <div className="relative flex flex-col text-sm md:flex-row gap-6 md:gap-8">
-          {NAV_ITEMS.map((item) => (
-            <NavItem 
-              key={item.link}
-              {...item}
-              isActive={activeLink === item.link}
-              onClick={handleNavClick}
-            />
-          ))}
-          <ActiveIndicator ref={activeBoxRef} />
-        </div>
+      <div className="flex flex-col md:flex-row gap-1 relative">
+        {NAV_ITEMS.map((item, index) => (
+          <NavItem 
+            key={item.link} 
+            {...item} 
+            index={index}
+            isActive={activeLink === item.link} 
+            onClick={handleNavClick} 
+          />
+        ))}
+        <ActiveIndicator ref={activeBoxRef} />
       </div>
     </nav>
   );
 });
 
-interface NavItemProps {
-  label: string;
-  link: string;
-  className?: string;
-  isActive: boolean;
-  onClick: (e: React.MouseEvent, link: string) => void;
-}
-
-// eslint-disable-next-line react/display-name
-const NavItem = memo(({ 
-  label, 
-  link, 
-  className = '', 
-  isActive, 
-  onClick 
-}: NavItemProps) => (
-  <Link
-    href={link}
-    onClick={(e) => onClick(e, link)}
-    className={`relative px-4 py-2 text-zinc-300 hover:text-cyan-400 transition-colors ${
-      isActive ? 'text-cyan-400' : ''
-    } ${className}`}
-    scroll={false}
-    aria-current={isActive ? 'page' : undefined}
+const NavItem = memo(({ label, link, index, isActive, onClick }: any) => (
+  <Link 
+    href={link} 
+    onClick={(e) => onClick(e, link)} 
+    className={`
+      relative px-4 py-2 text-[11px] font-bold uppercase tracking-[0.2em] transition-colors duration-300 z-10 flex items-center gap-3
+      ${isActive ? 'text-[#ffe1c1]' : 'text-zinc-500 hover:text-zinc-200'}
+    `}
   >
+    <span className="font-mono text-[8px] text-[#ffe1c1] md:hidden">[{index + 1}]</span>
     {label}
   </Link>
 ));
 
 const ActiveIndicator = memo(forwardRef<HTMLDivElement>((_, ref) => (
-  <div
-    ref={ref}
-    className="absolute hidden md:block bg-cyan-400/10 rounded-lg transition-all duration-300 ease-out"
-    aria-hidden="true"
+  <div 
+    ref={ref} 
+    className="absolute hidden md:block bottom-[-4px] h-[1px] bg-[#ffe1c1] transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]" 
   />
 )));
 

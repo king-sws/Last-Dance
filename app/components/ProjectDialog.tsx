@@ -1,13 +1,23 @@
-/* eslint-disable react/display-name */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-"use client"
+"use client";
 
-import React, { useState, useCallback, useMemo, memo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, Github, Calendar, Code, Star, Clock, Users, Zap, TrendingUp, ImageOff } from 'lucide-react';
+import React, { useState, useCallback, memo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import Image from "next/image"; 
+import {
+  ExternalLink,
+  Github,
+  X,
+  Terminal,
+  ArrowRight,
+  Activity,
+  Cpu,
+  Layers,
+  Star
+} from "lucide-react";
 
-interface Project {
+// --- Types ---
+export interface Project {
   imgSrc: string;
   title: string;
   description: string;
@@ -15,13 +25,15 @@ interface Project {
   primaryTech: string[];
   projectLink: string;
   githubLink?: string;
+  isFeatured?: boolean;
+  detailPageUrl?: string;
   metrics?: {
     completion?: string;
     complexity?: string;
     quality?: string;
   };
-  category: 'Frontend' | 'Fullstack' | 'Backend' | 'Mobile';
-  industry: 'SaaS' | 'Healthcare' | 'E-commerce' | 'Fintech' | 'Social' | 'EdTech/Career' | 'Productivity' | 'Hospitality' | 'Education';
+  category: "Frontend" | "Fullstack" | "Backend" | "Mobile";
+  industry: string;
 }
 
 interface ProjectDialogProps {
@@ -30,315 +42,181 @@ interface ProjectDialogProps {
   onClose: () => void;
 }
 
-// Memoized sub-components for better performance
-const ProjectImage = memo(({ imgSrc, title }: { imgSrc: string; title: string }) => {
-  const [imageStatus, setImageStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
-
-  const handleImageLoad = useCallback(() => setImageStatus('loaded'), []);
-  const handleImageError = useCallback(() => setImageStatus('error'), []);
+// --- Optimized Dialog Image Component ---
+const DialogImage = memo(({ src, alt }: { src: string; alt: string }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   return (
-    <div className="relative h-64 md:h-80 w-full overflow-hidden bg-zinc-800 rounded-t-2xl">
-      {imageStatus === 'loading' && (
-        <div className="absolute inset-0 flex items-center justify-center bg-zinc-900/70">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
-        </div>
-      )}
-
-      {imageStatus === 'error' ? (
-        <div className="flex h-full w-full items-center justify-center bg-zinc-900/70 text-zinc-500">
-          <div className="text-center">
-            <ImageOff className="mx-auto h-12 w-12 mb-4" />
-            <div className="text-lg font-medium">Image not available</div>
+    <div className="relative aspect-video w-full overflow-hidden bg-zinc-900">
+      {!isLoaded && !hasError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-zinc-950">
+          <div className="flex flex-col items-center gap-2">
+            <div className="h-[1px] w-12 bg-zinc-800 relative overflow-hidden">
+              <div className="absolute inset-0 bg-[#ffe1c1] animate-[loading_1.5s_infinite_linear]" />
+            </div>
+            <span className="text-[8px] font-mono text-zinc-600 uppercase tracking-widest">Loading_Asset</span>
           </div>
         </div>
-      ) : (
-        <img
-          src={imgSrc}
-          alt={`Screenshot of ${title} project`}
-          onLoad={handleImageLoad}
-          onError={handleImageError}
-          loading="lazy"
-          decoding="async"
-          className={`h-full w-full object-cover transition-opacity duration-300 ${
-            imageStatus === 'loaded' ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
       )}
 
-      <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/80 via-transparent to-zinc-900/20" />
+      {hasError ? (
+        <div className="flex h-full items-center justify-center text-zinc-500 bg-zinc-950">
+          <span className="text-[10px] font-mono uppercase tracking-widest">[Asset_Error]</span>
+        </div>
+      ) : (
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className={`object-cover transition-all duration-700  ${
+            isLoaded ? "scale-100 opacity-100" : "scale-105 opacity-0"
+          }`}
+          onLoadingComplete={() => setIsLoaded(true)}
+          onError={() => setHasError(true)}
+        />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-60" />
     </div>
   );
 });
 
-const TechBadge = memo(({ tech }: { tech: string }) => (
-  <span className="inline-flex items-center rounded-full bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-400 ring-1 ring-cyan-400/20">
-    {tech}
-  </span>
-));
+DialogImage.displayName = "DialogImage";
 
-const FeatureBadge = memo(({ tag }: { tag: string }) => (
-  <span className="inline-flex items-center rounded-md bg-purple-400/10 px-3 py-1.5 text-sm font-medium text-purple-300 ring-1 ring-purple-400/20">
-    {tag}
-  </span>
-));
-
-const MetricItem = memo(({ icon: Icon, label, value, color }: { 
-  icon: React.ElementType; 
-  label: string; 
-  value: string; 
-  color: string; 
-}) => (
-  <div className="flex items-center gap-3">
-    <Icon className={`h-5 w-5 ${color}`} />
-    <div>
-      <div className="text-sm font-medium text-zinc-300">{label}</div>
-      <div className={`text-lg font-semibold ${color}`}>{value}</div>
-    </div>
-  </div>
-));
-
+// --- Main Dialog Component ---
 const ProjectDialog: React.FC<ProjectDialogProps> = ({ project, isOpen, onClose }) => {
-  // Memoize expensive computations
-  const techBadges = useMemo(() => 
-    project?.primaryTech.map((tech, index) => (
-      <TechBadge key={`${tech}-${index}`} tech={tech} />
-    )) || [], 
-    [project?.primaryTech]
-  );
-
-  const featureBadges = useMemo(() => 
-    project?.tags.map((tag, index) => (
-      <FeatureBadge key={`${tag}-${index}`} tag={tag} />
-    )) || [], 
-    [project?.tags]
-  );
-
-  const metrics = useMemo(() => {
-    if (!project?.metrics) return null;
-    
-    const items = [];
-    if (project.metrics.completion) {
-      items.push(
-        <MetricItem 
-          key="completion"
-          icon={Clock} 
-          label="Completion" 
-          value={project.metrics.completion} 
-          color="text-emerald-400" 
-        />
-      );
-    }
-    if (project.metrics.complexity) {
-      items.push(
-        <MetricItem 
-          key="complexity"
-          icon={Code} 
-          label="Complexity" 
-          value={project.metrics.complexity} 
-          color="text-blue-400" 
-        />
-      );
-    }
-    if (project.metrics.quality) {
-      items.push(
-        <MetricItem 
-          key="quality"
-          icon={Star} 
-          label="Quality Score" 
-          value={project.metrics.quality} 
-          color="text-yellow-400" 
-        />
-      );
-    }
-    return items;
-  }, [project?.metrics]);
-
-  // Memoize animation variants to prevent recreation
-  const backdropVariants = useMemo(() => ({
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 }
-  }), []);
-
-  const dialogVariants = useMemo(() => ({
-    hidden: { 
-      opacity: 0, 
-      scale: 0.95,
-      y: 20
-    },
-    visible: { 
-      opacity: 1, 
-      scale: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        damping: 30,
-        stiffness: 400,
-        duration: 0.3
-      }
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.95,
-      y: 20,
-      transition: {
-        duration: 0.2
-      }
-    }
-  }), []);
-
-  // Memoize event handlers
   const handleBackdropClick = useCallback((e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
+    if (e.target === e.currentTarget) onClose();
   }, [onClose]);
-
-  const handleContentClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-  }, []);
 
   if (!project) return null;
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-          variants={backdropVariants}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-12 bg-zinc-950/95 backdrop-blur-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           onClick={handleBackdropClick}
         >
           <motion.div
-            className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-zinc-900 rounded-2xl border border-zinc-700/50 shadow-2xl [scrollbar-width:thin] [scrollbar-color:rgb(63_63_70)_transparent]"
-            variants={dialogVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            onClick={handleContentClick}
-            style={{ 
-              scrollbarWidth: 'thin',
-              scrollbarColor: 'rgb(63 63 70) transparent'
-            }}
+            className="relative w-full max-w-6xl max-h-full md:max-h-[85vh] overflow-hidden bg-zinc-950 border border-zinc-900 flex flex-col md:flex-row shadow-2xl"
+            initial={{ opacity: 0, scale: 0.98, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.98, y: 15 }}
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
+            {/* Close Trigger */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-zinc-800/90 hover:bg-zinc-700 transition-colors border border-zinc-600/50"
-              aria-label="Close dialog"
+              className="absolute top-0 right-0 z-50 p-4 bg-zinc-900 border-l border-b border-zinc-900 hover:bg-[#ffe1c1] hover:text-black transition-colors"
             >
-              <X className="h-5 w-5 text-zinc-300" />
+              <X className="h-4 w-4" />
             </button>
 
-            {/* Header Image */}
-            <ProjectImage imgSrc={project.imgSrc} title={project.title} />
+            {/* Visual Pane */}
+            <div className="w-full md:w-3/5 border-r border-zinc-900 flex flex-col">
+              <div className="relative flex-grow overflow-hidden">
+                <DialogImage src={project.imgSrc} alt={project.title} />
+                
+                {/* Meta Labels */}
+                <div className="absolute top-6 left-6 flex flex-wrap gap-2">
+                   {project.isFeatured && (
+                    <span className="bg-[#ffe1c1] text-black px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-lg">
+                      <Star className="w-3 h-3 fill-current" /> Priority_Build
+                    </span>
+                   )}
+                  <span className="bg-zinc-900 border border-zinc-800 px-3 py-1 text-[10px] font-mono uppercase text-zinc-400">
+                    {project.category}
+                  </span>
+                </div>
+              </div>
 
-            {/* Floating Badges */}
-            <div className="absolute top-5 left-4 flex gap-2">
-              <span className="inline-flex items-center rounded-full bg-cyan-400/20 px-4 py-2 text-sm font-semibold text-cyan-300 ring-1 ring-cyan-400/30 backdrop-blur-sm">
-                {project.category}
-              </span>
-              <span className="inline-flex items-center rounded-full bg-zinc-700/60 px-4 py-2 text-sm font-semibold text-zinc-300 ring-1 ring-zinc-600/40 backdrop-blur-sm">
-                {project.industry}
-              </span>
+              {/* External Links Bar */}
+              <div className="p-px bg-zinc-900 grid grid-cols-2 gap-px border-t border-zinc-900">
+                <Link
+                  href={project.projectLink}
+                  target="_blank"
+                  className="flex items-center justify-center gap-3 bg-zinc-950 hover:bg-[#ffe1c1] hover:text-black transition-all py-5 text-[10px] font-mono uppercase tracking-[0.2em]"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" /> Launch_Deploy
+                </Link>
+                {project.githubLink && (
+                  <Link
+                    href={project.githubLink}
+                    target="_blank"
+                    className="flex items-center justify-center gap-3 bg-zinc-950 hover:bg-white hover:text-black transition-all py-5 text-[10px] font-mono uppercase tracking-[0.2em]"
+                  >
+                    <Github className="w-3.5 h-3.5" /> Source_Index
+                  </Link>
+                )}
+              </div>
             </div>
 
-            {/* Content */}
-            <div className="p-6 md:p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Main Content */}
-                <div className="lg:col-span-2 space-y-6">
-                  {/* Title */}
-                  <h2 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-2">
+            {/* Documentation Pane */}
+            <div className="w-full md:w-2/5 flex flex-col overflow-y-auto bg-zinc-950 [scrollbar-width:thin] [scrollbar-color:rgb(39_39_42)_transparent]">
+              <div className="p-8 md:p-10 space-y-10">
+                
+                {/* Identification */}
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-[10px] font-mono text-zinc-600 uppercase tracking-[0.3em]">Module_Specification</span>
+                  </div>
+                  <h2 className="text-4xl font-bold text-white tracking-tighter uppercase mb-4 leading-none">
                     {project.title}
                   </h2>
+                  <p className="text-zinc-500 text-sm leading-relaxed font-light italic border-l border-zinc-800 pl-4">
+                    "{project.description}"
+                  </p>
+                </div>
 
-                  {/* Description */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-zinc-200 mb-3">Project Overview</h3>
-                    <p className="text-zinc-400 leading-relaxed">
-                      {project.description}
-                    </p>
-                  </div>
+                {/* Technical Ledger */}
+                <div className="space-y-px bg-zinc-900 border border-zinc-900">
+                  <MetricRow icon={<Activity className="w-3 h-3"/>} label="System_Efficiency" value={project.metrics?.completion} />
+                  <MetricRow icon={<Cpu className="w-3 h-3"/>} label="Architecture_Load" value={project.metrics?.complexity} />
+                  <MetricRow icon={<Layers className="w-3 h-3"/>} label="Code_Integrity" value={project.metrics?.quality} />
+                </div>
 
-                  {/* Technologies */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-zinc-200 mb-3">Technology Stack</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {techBadges}
-                    </div>
-                  </div>
-
-                  {/* Tags */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-zinc-200 mb-3">Key Features</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {featureBadges}
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-4 pt-4">
-                    <a
-                      href={project.projectLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-cyan-400 text-zinc-900 font-semibold rounded-lg hover:from-cyan-400 hover:to-cyan-300 transition-all duration-200 shadow-lg shadow-cyan-500/25"
-                    >
-                      <ExternalLink className="h-5 w-5" />
-                      View Live Demo
-                    </a>
-
-                    {project.githubLink && (
-                      <a
-                        href={project.githubLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-6 py-3 border border-zinc-600 bg-zinc-800/50 text-zinc-200 font-semibold rounded-lg hover:bg-zinc-700 hover:border-zinc-500 transition-all duration-200"
-                      >
-                        <Github className="h-5 w-5" />
-                        View Source
-                      </a>
-                    )}
+                {/* Tech Stack */}
+                <div className="space-y-4">
+                  <span className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest flex items-center gap-2">
+                    <Terminal className="w-3 h-3" /> System_Stack
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {project.primaryTech.map((tech) => (
+                      <span key={tech} className="text-[10px] font-mono border border-zinc-800 px-2 py-1 text-zinc-400 hover:text-[#ffe1c1] hover:border-[#ffe1c1]/30 transition-colors">
+                        #{tech}
+                      </span>
+                    ))}
                   </div>
                 </div>
 
-                {/* Sidebar */}
-                <div className="space-y-6">
-                  {/* Project Metrics */}
-                  {metrics && metrics.length > 0 && (
-                    <div className="rounded-lg border border-zinc-700/30 bg-gradient-to-br from-zinc-800/40 to-zinc-800/20 p-6">
-                      <h3 className="text-lg font-semibold text-zinc-200 mb-4">Project Metrics</h3>
-                      <div className="space-y-4">
-                        {metrics}
-                      </div>
+                {/* Primary Action (Featured) */}
+                {project.isFeatured && project.detailPageUrl && (
+                  <Link
+                    href={project.detailPageUrl}
+                    onClick={onClose}
+                    className="group flex items-center justify-between p-5 border border-[#ffe1c1]/30 bg-[#ffe1c1]/5 hover:bg-[#ffe1c1] hover:text-black transition-all duration-500"
+                  >
+                    <div className="flex flex-col">
+                      <span className="text-[9px] font-mono uppercase opacity-70 tracking-tighter">Read_Full_Documentation</span>
+                      <span className="text-xs font-black uppercase tracking-widest">Case Study Breakdown</span>
                     </div>
-                  )}
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                )}
+              </div>
 
-                  {/* Project Details */}
-                  <div className="rounded-lg border border-zinc-700/30 bg-gradient-to-br from-zinc-800/40 to-zinc-800/20 p-6">
-                    <h3 className="text-lg font-semibold text-zinc-200 mb-4">Project Details</h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-zinc-400">Category</span>
-                        <span className="text-zinc-200 font-medium">{project.category}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-zinc-400">Industry</span>
-                        <span className="text-zinc-200 font-medium">{project.industry}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-zinc-400">Technologies</span>
-                        <span className="text-zinc-200 font-medium">{project.primaryTech.length}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-zinc-400">Features</span>
-                        <span className="text-zinc-200 font-medium">{project.tags.length}</span>
-                      </div>
-                    </div>
+              {/* Footer Registry Info */}
+              <div className="mt-auto p-6 bg-zinc-900/20 border-t border-zinc-900">
+                <div className="flex justify-between items-center text-[9px] font-mono text-zinc-600 uppercase tracking-widest">
+                  <div className="flex gap-4">
+                    <span>ID: {project.industry}</span>
+                    <span>VER: 2026.02</span>
                   </div>
+                  <span className="text-emerald-900 font-bold animate-pulse">● System_Online</span>
                 </div>
               </div>
             </div>
@@ -348,5 +226,16 @@ const ProjectDialog: React.FC<ProjectDialogProps> = ({ project, isOpen, onClose 
     </AnimatePresence>
   );
 };
+
+// --- Pure Helper for the Registry Grid ---
+const MetricRow = ({ icon, label, value }: { icon: React.ReactNode, label: string, value?: string }) => (
+  <div className="flex items-center justify-between p-4 bg-zinc-950 hover:bg-zinc-900 transition-colors">
+    <div className="flex items-center gap-3">
+      <span className="text-zinc-700">{icon}</span>
+      <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tighter">{label}</span>
+    </div>
+    <span className="text-[11px] font-mono text-[#ffe1c1] font-bold">{value || "N/A"}</span>
+  </div>
+);
 
 export default memo(ProjectDialog);

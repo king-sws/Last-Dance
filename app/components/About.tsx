@@ -1,315 +1,194 @@
-/* eslint-disable react/no-unescaped-entities */
 'use client'
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { motion, useTransform, useScroll } from 'framer-motion';
-import { FiCode, FiServer, FiTool, FiUser, FiZap, FiDatabase, FiTrendingUp, FiLayers, FiGlobe } from 'react-icons/fi';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { FiCode, FiServer, FiDatabase, FiZap, FiLayers, FiTrendingUp, FiUser, FiActivity } from 'react-icons/fi';
 import { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
 
-// Define types for our data
-interface Skill {
-  name: string;
-  icon: React.ReactElement;
-  description: string;
-}
-
-interface StatsType {
-  yearsExp: number;
-  companies: number;
-  seoImprovement: number;
-  performanceGain: number;
-}
-
 const About = () => {
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
-  const [stats, setStats] = useState<StatsType>({ 
-    yearsExp: 0, 
-    companies: 0, 
-    seoImprovement: 0,
-    performanceGain: 0
-  });
+  const [stats, setStats] = useState({ yearsExp: 0, seo: 0, perf: 0, projects: 0 });
 
-  // Real skills based on actual resume data
-  const coreSkills: Skill[] = useMemo(() => [
-    { 
-      name: 'React & Next.js Mastery', 
-      icon: <FiCode className="text-cyan-400" />,
-      description: 'Expert in building production-ready applications with SSR/SSG, achieving 96+ Lighthouse scores and implementing secure role-based dashboards'
-    },
-    { 
-      name: 'Node.js & Backend APIs', 
-      icon: <FiServer className="text-emerald-400" />,
-      description: 'Built robust RESTful APIs with Express.js, JWT authentication, and real-time WebSocket features for fintech and healthtech platforms'
-    },
-    { 
-      name: 'Database Architecture', 
-      icon: <FiDatabase className="text-blue-400" />,
-      description: 'Designed optimized MongoDB/PostgreSQL schemas, reducing data retrieval times by 35% for high-traffic e-commerce applications'
-    },
-    { 
-      name: 'Performance Engineering', 
-      icon: <FiZap className="text-yellow-400" />,
-      description: 'Specialized in Core Web Vitals optimization through code splitting, CDN caching, delivering 3.5s faster load times'
-    },
-    { 
-      name: 'Full-Stack Development', 
-      icon: <FiLayers className="text-purple-400" />,
-      description: 'Built scalable web applications using React and Node.js with focus on performance optimization and clean architecture'
-    },  
-    { 
-      name: 'SEO & Conversion Growth', 
-      icon: <FiTrendingUp className="text-pink-400" />,
-      description: 'Improved SEO efficiency by 52% using Next.js SSG/ISR, resulting in 47% organic traffic increase and 25% conversion boost'
-    }
-  ], []);
-
-  // Animation variants
-  const containerVariants = useMemo(() => ({
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { staggerChildren: 0.1, duration: 0.3 }
-    }
-  }), []);
-
-  const itemVariants = useMemo(() => ({
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  }), []);
-
-  // Real stats animation based on actual resume data
   useEffect(() => {
     const animateStats = () => {
-      const duration = 1800;
+      const duration = 2000;
       const startTime = performance.now();
-      const targets = {
-        yearsExp: 4,
-        companies: 3,
-        seoImprovement: 52,
-        performanceGain: 40
-      };
+      const targets = { yearsExp: 4, seo: 52, perf: 40, projects: 20 };
       
-      const updateStats = (timestamp: number) => {
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = 1 - (1 - progress) * (1 - progress);
-        
+      const update = (now: number) => {
+        const p = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3); // Cubic ease out
         setStats({
           yearsExp: Math.ceil(eased * targets.yearsExp),
-          companies: Math.ceil(eased * targets.companies),
-          seoImprovement: Math.ceil(eased * targets.seoImprovement),
-          performanceGain: Math.ceil(eased * targets.performanceGain)
+          seo: Math.ceil(eased * targets.seo),
+          perf: Math.ceil(eased * targets.perf),
+          projects: Math.ceil(eased * targets.projects)
         });
-        
-        if (progress < 1) {
-          requestAnimationFrame(updateStats);
-        }
+        if (p < 1) requestAnimationFrame(update);
       };
-      
-      requestAnimationFrame(updateStats);
+      requestAnimationFrame(update);
     };
-    
     animateStats();
   }, []);
 
-  // Enhanced skill item component with original design
-  const SkillItem = ({ skill }: { skill: Skill }) => (
-    <motion.div
-      whileHover={{ y: -2, scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 300 }}
-      className="p-5 rounded-xl bg-zinc-800/50 border border-cyan-500/20 backdrop-blur-sm group hover:border-cyan-400/40 transition-all duration-300"
-    >
-      <div className="flex items-center gap-3 mb-3">
-        <div className="text-xl group-hover:scale-110 transition-transform">
-          {skill.icon}
-        </div>
-        <h3 className="font-semibold text-zinc-100">{skill.name}</h3>
-      </div>
-      <div className="h-px bg-gradient-to-r from-cyan-500/30 via-cyan-400/20 to-transparent mb-3" />
-      <p className="text-sm text-zinc-300 leading-relaxed">
-        {skill.description}
-      </p>
-    </motion.div>
-  );
-
   return (
-    <section 
-      id="about" 
-      className="relative py-20 overflow-hidden"
-      style={{ background: 'hsl(240 6% 10%)' }}
-    >
-      {/* Background */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 via-transparent to-zinc-900" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
+    <section id="about" className="relative py-26 px-6 sm:px-10 bg-zinc-950 overflow-hidden">
+      {/* Background: Blueprint Grid & Radial Glow */}
+      <div className="absolute inset-0 opacity-20" 
+           style={{ backgroundImage: `radial-gradient(circle at 2px 2px, #3f3f46 1px, transparent 0)`, backgroundSize: '40px 40px' }} />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#ffe1c1]/5 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="container mx-auto px-6 relative z-10">
+        
+{/* Header: Grand Entry Style */}
+<div className="flex flex-col mb-20">
+  <div className="flex items-center gap-4 mb-6">
+    <div className="h-px w-12 bg-[#ffe1c1]" />
+    <span className="text-[10px] font-mono uppercase tracking-[0.5em] text-[#ffe1c1]">Professional_Manifesto</span>
+  </div>
+  
+  {/* The Revised Title */}
+  <h2 className="text-6xl md:text-8xl font-bold text-white tracking-tighter leading-none mb-8">
+    Full-Stack <br />
+    <span className="text-zinc-700">Developer</span><span className="text-[#ffe1c1]">.</span>
+  </h2>
+
+  {/* The Anti-AI Bio (Human & Direct) */}
+  <p className="max-w-3xl text-zinc-400 text-lg md:text-xl leading-relaxed font-light">
+    Full-Stack Developer with <span className="text-white font-medium">4+ years of experience</span> solving complex problems with code. I specialize in <span className="text-[#ffe1c1]">React/Next.js and Node.js</span>, focusing on building software that is as stable as it is fast. My goal is to turn business requirements into <span className="text-white underline decoration-[#ffe1c1]/30 underline-offset-4">scalable production systems</span>.
+  </p>
+</div>
+
+        {/* Main Content Grid */}
+        <div className="grid lg:grid-cols-12 gap-1">
+          
+          {/* Left: Detailed Biography (The "Context") */}
+          <div className="lg:col-span-7 p-8 md:p-12 bg-zinc-900/30 border border-zinc-800/50 backdrop-blur-md rounded-tl-3xl lg:rounded-bl-3xl relative overflow-hidden">
+  {/* Decorative Corner ID */}
+  <div className="absolute top-0 right-0 p-4 opacity-10 font-mono text-[8px] tracking-[0.4em] text-white pointer-events-none">
+    ARCH_REF_04
+  </div>
+
+  <h3 className="text-xl font-bold mb-8 text-[#ffe1c1] flex items-center gap-3">
+    <FiUser className="text-lg" /> 
+    <span className="tracking-tight">Development_Journey</span>
+  </h3>
+
+  <div className="space-y-6 text-zinc-400 leading-relaxed font-light">
+  <p>
+    I build <strong className="text-white">robust web applications</strong> where clean code and fast load times aren't optional. My approach is simple: write scalable code that solves business problems without creating technical debt.
+  </p>
+  
+  <p>
+    Over the past 4+ years, I’ve worked on complex projects including <span className="text-[#ffe1c1]">fintech payment integrations</span> and real-time <span className="text-[#ffe1c1]">healthtech dashboards</span>. I specialize in making sure data moves securely and quickly across the entire stack.
+  </p>
+  
+  <p className="pb-8 border-b border-zinc-800/50">
+    Currently, I’m focused on <span className="text-white">Full-Stack Optimization</span>. I don't just build features; I ensure they perform, consistently hitting 95+ Lighthouse scores and optimizing server-side logic for maximum efficiency.
+  </p>
+  
+  {/* Key Achievements Grid - Keeping the "Registry" look */}
+  <div className="pt-8 grid grid-cols-1 md:grid-cols-2 gap-3">
+{[
+  { label: "Deployment Speed", val: "Sprint-Ready", color: "text-blue-500", bg: "bg-zinc-900/40" },
+  { label: "Code Integrity", val: "100% Type-Safe", color: "text-[#ffe1c1]", bg: "bg-zinc-900/40" },
+  { label: "Optimization", val: "3.5s Saved", color: "text-emerald-500", bg: "bg-zinc-900/40" }, // Based on your Ibcove record [cite: 40]
+  { label: "AI-Augmented Velocity", val: "2x Standard", color: "text-purple-500", bg: "bg-zinc-900/40" },
+].map((item, i) => (
+      <div 
+        key={i} 
+        className={`flex items-center gap-3 ${item.bg} p-4 rounded-lg border border-zinc-900 transition-all hover:border-zinc-800`}
+      >
+        <div className={`w-1 h-1 rounded-full ${item.color} shadow-[0_0_8px_currentColor]`} />
+        <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-[0.2em]">
+          {item.label}
+        </span>
+        <span className={`ml-auto font-bold text-[11px] font-mono ${item.color}`}>
+          {item.val}
+        </span>
       </div>
+    ))}
+  </div>
+</div>
+</div>
 
-      <div className="container px-4 sm:px-6">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-          transition={{ duration: 0.6 }}
-          className="bg-zinc-900/60 backdrop-blur-xl rounded-2xl border border-cyan-500/20"
-        >
-          <div className="p-8 md:p-10">
-            {/* Section Header */}
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={containerVariants}
-            >
-              <motion.div 
-                variants={itemVariants}
-                className="inline-flex items-center gap-3 px-4 py-2 bg-zinc-800 rounded-full border border-cyan-500/30 mb-6"
+          {/* Right: Technical Specifications Grid (The 4 Cards) */}
+          <div className="lg:col-span-5 grid grid-cols-1 gap-1">
+            {expertiseData.map((skill, idx) => (
+              <motion.div
+                key={idx}
+                whileHover={{ backgroundColor: "rgba(255, 225, 193, 0.03)" }}
+                className={`p-8 bg-zinc-900/20 border border-zinc-800/50 flex flex-col justify-center transition-colors
+                  ${idx === 1 ? 'lg:rounded-tr-3xl' : ''} 
+                  ${idx === 3 ? 'lg:rounded-br-3xl' : ''}`}
               >
-                <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                <span className="text-sm text-cyan-400 font-medium">ABOUT ME</span>
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="p-2 bg-zinc-950 rounded-lg text-[#ffe1c1] border border-zinc-800 group-hover:border-[#ffe1c1]/50 transition-colors">
+                    {skill.icon}
+                  </div>
+                  <div>
+                    <h4 className="text-white font-bold tracking-tight">{skill.name}</h4>
+                    <span className="text-[9px] font-mono text-zinc-600 uppercase tracking-widest">Spec_0{idx + 1}</span>
+                  </div>
+                </div>
+                <p className="text-sm text-zinc-500 leading-relaxed">
+                  {skill.description}
+                </p>
               </motion.div>
-              
-              <motion.h2 
-                variants={itemVariants}
-                className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-300 via-emerald-300 to-cyan-500 bg-clip-text text-transparent mb-4"
-              >
-                Full-Stack Developer
-              </motion.h2>
-
-              <motion.p 
-                variants={itemVariants}
-                className="text-lg text-zinc-400 leading-relaxed mb-10 max-w-3xl"
-              >
-                Passionate Full-Stack Developer with 4+ years of experience building high-performance web applications 
-                for fintech, healthtech, and e-commerce platforms. Specialized in React/Next.js and Node.js with a 
-                proven track record of delivering measurable business results.
-              </motion.p>
-            </motion.div>
-
-            {/* Main Content */}
-            <div className="grid lg:grid-cols-2 gap-10 mb-12">
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold mb-4 text-cyan-300 flex items-center gap-2">
-                  <FiUser className="text-cyan-400" />
-                  My Development Journey
-                </h3>
-                <div className="space-y-4 text-zinc-300 leading-relaxed">
-                  <p>
-                    I specialize in building <strong className="text-cyan-300">modern web applications</strong> with 
-                    <strong className="text-emerald-300"> React/Next.js on the frontend</strong> and 
-                    <strong className="text-blue-300"> Node.js/Express on the backend</strong>. My focus is on 
-                    creating scalable, performant solutions that drive real business impact.
-                  </p>
-                  <p>
-                    Over the past 4+ years, I've worked on diverse projects including secure payment platforms 
-                    for fintech companies, role-based healthcare dashboards with real-time inventory tracking, 
-                    and high-traffic e-commerce systems managing hundreds of thousands of products.
-                  </p>
-                  <p>
-                    I'm passionate about performance optimization, having consistently achieved 96+ Lighthouse scores 
-                    and significant improvements in Core Web Vitals. Currently available for new opportunities 
-                    while continuing to expand my expertise in modern web technologies.
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold mb-4 text-cyan-300">Key Achievements</h3>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-3 text-zinc-300">
-                    <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full mt-2 flex-shrink-0" />
-                      <span>Built enterprise-grade platforms handling <strong className="text-cyan-300">thousands of concurrent users</strong> with 89.9% uptime</span>
-                  </li>
-                  <li className="flex items-start gap-3 text-zinc-300">
-                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-2 flex-shrink-0" />
-                    <span>Reduced critical rendering path by <strong className="text-emerald-300">30%</strong> through advanced optimization</span>
-                  </li>
-                  <li className="flex items-start gap-3 text-zinc-300">
-                    <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0" />
-                    <span>Achieved <strong className="text-blue-300">52% SEO improvement</strong> resulting in 47% organic traffic boost</span>
-                  </li>
-                  <li className="flex items-start gap-3 text-zinc-300">
-                    <div className="w-1.5 h-1.5 bg-purple-400 rounded-full mt-2 flex-shrink-0" />
-                    <span>Implemented secure authentication with <strong className="text-purple-300">zero security incidents</strong></span>
-                  </li>
-                  <li className="flex items-start gap-3 text-zinc-300">
-                    <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full mt-2 flex-shrink-0" />
-                    <span>Maintained <strong className="text-yellow-300">96+ Lighthouse scores</strong> across all projects</span>
-                  </li>
-                  <li className="flex items-start gap-3 text-zinc-300">
-                    <div className="w-1.5 h-1.5 bg-pink-400 rounded-full mt-2 flex-shrink-0" />
-                    <span>Achieved <strong className="text-pink-300">90%+ test coverage</strong> reducing bugs by 25%</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Skills Grid - Original Design */}
-            <div className="mb-12">
-              <h3 className="text-xl font-bold mb-6 text-cyan-300">Technical Expertise</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {coreSkills.map((skill, index) => (
-                  <motion.div
-                    key={skill.name}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <SkillItem skill={skill} />
-                  </motion.div>
-                ))}
-              </div>
-            </div>            
-
-            {/* Enhanced Stats Section */}
-            <div className="border-t border-cyan-500/20 pt-8">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-300 to-cyan-500 bg-clip-text text-transparent mb-1">
-                    {stats.yearsExp}+
-                  </div>
-                  <div className="text-zinc-400 text-sm">Years Experience</div>
-                </div>
-
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-300 to-emerald-500 bg-clip-text text-transparent mb-1">
-                    10+
-                  </div>
-                  <div className="text-zinc-400 text-sm">Projects Delivered</div>
-                </div>
-
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-300 to-purple-500 bg-clip-text text-transparent mb-1">
-                    {stats.seoImprovement}%
-                  </div>
-                  <div className="text-zinc-400 text-sm">SEO Improvement</div>
-                </div>
-
-                <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-yellow-300 to-yellow-500 bg-clip-text text-transparent mb-1">
-                    {stats.performanceGain}%
-                  </div>
-                  <div className="text-zinc-400 text-sm">Performance Gain</div>
-                </div>
-              </div>
-
-              {/* Professional Logo Section */}
-              <div className="flex justify-center">
-                <motion.div 
-                  whileHover={{ rotate: 360, scale: 1.1 }}
-                  transition={{ type: 'spring', duration: 0.8 }}
-                  className="opacity-80 hover:opacity-100 transition-opacity"
-                >
-                  <Image src='/logo.svg' alt="Oussama Logo" width={50} height={50} className='w-auto h-auto' />
-                </motion.div>
-              </div>
-            </div>
+            ))}
           </div>
-        </motion.div>
+        </div>
+
+        {/* Footer: Live Metrics & Logo */}
+<div className="mt-24 flex flex-col md:flex-row items-stretch justify-between gap-12 border-y border-zinc-900 py-12">
+  
+  {/* The Technical Stat Grid */}
+  <div className="flex flex-wrap md:flex-nowrap gap-px bg-zinc-900 w-full md:w-auto border border-zinc-900">
+    <StatBlock label="Experience" value={`${stats.yearsExp}Yrs`} color="text-[#ffe1c1]" />
+    <StatBlock label="Projects" value={`${stats.projects}+`} color="text-white" />
+    <StatBlock label="SEO_Growth" value={`${stats.seo}%`} color="text-emerald-500" />
+    <StatBlock label="Perf_Gain" value={`${stats.perf}%`} color="text-blue-500" />
+  </div>
+
+  {/* Signature Logo Box */}
+  <div className="flex items-center justify-center px-6">
+    <motion.div 
+      animate={{ 
+        rotate: [0, 5, -5, 0],
+        borderColor: ["#18181b", "#27272a", "#18181b"] 
+      }}
+      transition={{ repeat: Infinity, duration: 6 }}
+      className="relative w-16 h-16 flex items-center justify-center border border-zinc-800 bg-zinc-950 shadow-2xl"
+      style={{ clipPath: 'polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%)' }}
+    >
+      <Image src='/logo.svg' alt="Logo" width={32} height={32} className="opacity-80" />
+      {/* Status Node */}
+      <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
+        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+        <span className="text-[6px] font-mono text-emerald-500 uppercase tracking-tighter">Live</span>
+      </div>
+    </motion.div>
+  </div>
+</div>
       </div>
     </section>
   );
 };
+
+const StatBlock = ({ label, value, color }: { label: string, value: string, color: string }) => (
+  <div className="bg-zinc-950 px-8 py-6 min-w-[140px] flex-1">
+    <span className="block text-[10px] font-mono text-zinc-600 uppercase tracking-[0.3em] mb-2">
+      {label}
+    </span>
+    <span className={`text-3xl font-bold tracking-tighter ${color}`}>
+      {value}
+    </span>
+  </div>
+);
+
+const expertiseData = [
+  { name: 'React & Next.js Mastery', icon: <FiCode />, description: 'Expert in building production-ready applications with SSR/SSG and 96+ Lighthouse scores.' },
+  { name: 'Node.js & Backend APIs', icon: <FiServer />, description: 'Robust RESTful APIs with JWT authentication and real-time WebSocket features.' },
+  { name: 'Database Architecture', icon: <FiDatabase />, description: 'Optimized MongoDB/PostgreSQL schemas, reducing data retrieval times by 35%.' },
+  { name: 'Performance Engineering', icon: <FiZap />, description: 'Specialized in Core Web Vitals, delivering 3.5s faster load times.' }
+];
 
 export default About;
