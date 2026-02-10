@@ -229,7 +229,7 @@ const SelloraProjectPage = () => {
             {/* 2. The Project Image */}
             <div className="relative aspect-video overflow-hidden">
               <Image
-                src="/Cover.png"
+                src="/image/selo.png"
                 alt="Sellora E-commerce Platform"
                 width={1200}
                 height={800}

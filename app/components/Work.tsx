@@ -315,7 +315,7 @@ const Work = () => {
       },
     },
     {
-      imgSrc: "/image/Cover-up.png",
+      imgSrc: "/image/selo.png",
       title: "Sellora - E-commerce Platform",
       description:
         "A production-ready e-commerce platform engineered for conversion, security, and exceptional shopping experiences. Features advanced product management, secure checkout with Stripe, analytics dashboard, and inventory management.",
