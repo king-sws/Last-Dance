@@ -121,12 +121,12 @@ const Review = () => {
     <section 
       ref={sectionRef}
       id="reviews" 
-      className="relative py-26 bg-zinc-950 overflow-hidden"
+      className="relative py-16 md:py-26 px-4 sm:px-10 bg-zinc-950 overflow-hidden"
     >
       {/* 1. Subtle Architectural Grid Overlay */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/graphy.png')]" />
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('/textures/graphy.png')]" />
       
-      <div className="container px-4 mx-auto relative z-10">
+      <div className="container mx-auto px-0 relative z-10">
         
         {/* 2. Professional Header */}
         <div className="flex flex-col items-center text-center mb-24">
@@ -139,7 +139,7 @@ const Review = () => {
             Professional <span className="italic font-serif font-light text-[#ffe1c1]">Endorsements.</span>
           </h3>
           
-          <div className="flex items-center gap-4 text-zinc-500 font-light text-lg">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-zinc-500 font-light text-lg">
             <span>Direct feedback from</span>
             <span className="text-zinc-200 underline decoration-[#ffe1c1]/40 underline-offset-8">
               <FlipWords
@@ -152,17 +152,17 @@ const Review = () => {
         </div>
 
 {/* 3. The Marquee System */}
-<div className="space-y-8 relative">
-  
+<div className="space-y-6 sm:space-y-8 relative -mx-4 sm:-mx-10">
+
   {/* Row 1 */}
   <div className="relative overflow-hidden group">
-    {/* Fade Edges - Higher Z-Index */}
-    <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-transparent z-30 pointer-events-none" />
-    <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-zinc-950 via-zinc-950/80 to-transparent z-30 pointer-events-none" />
-    
-    <div 
-      className="flex gap-6 w-max relative z-20"
-      style={{ 
+    {/* Fade Edges - scaled down + full-bleed on mobile */}
+    <div className="absolute inset-y-0 left-0 w-12 sm:w-24 md:w-32 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-transparent z-30 pointer-events-none" />
+    <div className="absolute inset-y-0 right-0 w-12 sm:w-24 md:w-32 bg-gradient-to-l from-zinc-950 via-zinc-950/80 to-transparent z-30 pointer-events-none" />
+
+    <div
+      className="flex gap-4 sm:gap-6 w-max relative z-20 px-4 sm:px-10"
+      style={{
         animation: 'marquee-left 80s linear infinite',
         animationPlayState: isPausedRow1 ? 'paused' : 'running'
       }}
@@ -170,7 +170,7 @@ const Review = () => {
       onMouseLeave={() => setIsPausedRow1(false)}
     >
       {duplicatedReviews.map((review, index) => (
-        <div key={`row1-${index}`} className="w-[350px] lg:w-[450px] px-3">
+        <div key={`row1-${index}`} className="w-[280px] sm:w-[350px] lg:w-[450px] px-3">
            <ReviewCard {...review} />
         </div>
       ))}
@@ -179,13 +179,12 @@ const Review = () => {
 
   {/* Row 2 */}
   <div className="relative overflow-hidden group">
-    {/* Fade Edges - Higher Z-Index */}
-    <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-transparent z-30 pointer-events-none" />
-    <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-zinc-950 via-zinc-950/80 to-transparent z-30 pointer-events-none" />
-    
-    <div 
-      className="flex gap-6 w-max relative z-20"
-      style={{ 
+    <div className="absolute inset-y-0 left-0 w-12 sm:w-24 md:w-32 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-transparent z-30 pointer-events-none" />
+    <div className="absolute inset-y-0 right-0 w-12 sm:w-24 md:w-32 bg-gradient-to-l from-zinc-950 via-zinc-950/80 to-transparent z-30 pointer-events-none" />
+
+    <div
+      className="flex gap-4 sm:gap-6 w-max relative z-20 px-4 sm:px-10"
+      style={{
         animation: 'marquee-right 80s linear infinite',
         animationPlayState: isPausedRow2 ? 'paused' : 'running'
       }}
@@ -193,7 +192,7 @@ const Review = () => {
       onMouseLeave={() => setIsPausedRow2(false)}
     >
       {duplicatedReviews.map((review, index) => (
-        <div key={`row2-${index}`} className="w-[350px] lg:w-[450px] px-3">
+        <div key={`row2-${index}`} className="w-[280px] sm:w-[350px] lg:w-[450px] px-3">
            <ReviewCard {...review} />
         </div>
       ))}

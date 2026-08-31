@@ -9,6 +9,7 @@ import {
   BarChart3, Kanban, Code, Server, ArrowRight, Smartphone, Laptop,
   Layout, FileText, Star
 } from 'lucide-react';
+import { Reveal } from "@/app/components/Reveal";
 
 const BluttonProjectPage = () => {
   const features = [
@@ -114,18 +115,21 @@ const metrics = [
   ];
 
   return (
-    <section id="blutto" className="bg-zinc-950 py-24 px-6 sm:px-10 text-white">
-      <div className="container mx-auto max-w-6xl">
+    <section id="blutto" className="bg-zinc-950 py-16 md:py-26 px-4 sm:px-10 text-white overflow-hidden">
+      <div className="container mx-auto px-0">
 
         {/* Breadcrumb */}
+        <Reveal>
         <nav className="text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-600 mb-16 flex items-center gap-3">
           <Link href="/#work" className="hover:text-cyan-400 transition-colors">Archive_Projects</Link>
           <span className="text-zinc-800">/</span>
           <span className="text-cyan-500/80 underline underline-offset-4">Project_Blutto</span>
         </nav>
+        </Reveal>
 
 {/* Header Section - Engineering Manifest Style */}
-<div className="relative pt-12 mb-20">
+<Reveal>
+<div className="relative pt-12 mb-20 overflow-hidden">
   {/* Background System Code - Subtle Watermark */}
   <div className="absolute -top-10 left-0 font-mono text-[12rem] text-white/[0.02] select-none pointer-events-none uppercase font-bold">
     Blutto
@@ -142,7 +146,7 @@ const metrics = [
 
     {/* The Title Architecture */}
     <div className="max-w-4xl">
-      <h1 className="text-6xl md:text-8xl font-normal tracking-tighter text-white mb-6">
+      <h1 className="text-5xl md:text-6xl lg:text-8xl font-normal tracking-tighter text-white mb-6">
         Blutto<span className="text-cyan-500">.</span>
       </h1>
       
@@ -182,8 +186,10 @@ const metrics = [
     </div>
   </div>
 </div>
+</Reveal>
 
 {/* Hero Image & Command Bar */}
+<Reveal>
 <div className="mb-20 group">
   {/* The Window Frame */}
   <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900 shadow-[0_0_50px_-12px_rgba(34,211,238,0.2)]">
@@ -249,8 +255,10 @@ const metrics = [
     </div>
   </div>
 </div>
+</Reveal>
 
 {/* Problem & Solution - The Project Audit */}
+<Reveal>
 <div className="mb-32">
   <div className="grid lg:grid-cols-2 gap-12 items-start">
     {/* Left: Problem Audit */}
@@ -319,9 +327,11 @@ const metrics = [
     </div>
   </div>
 </div>
+</Reveal>
 
         {/* Workflow Visualization */}
 {/* Workflow Visualization - System Architecture Style */}
+<Reveal>
 <div className="mb-20 relative">
   {/* Header with improved spacing */}
   <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
@@ -424,8 +434,10 @@ const metrics = [
     ))}
   </div>
 </div>
+</Reveal>
 
 {/* Engineering Excellence - Performance & Optimization Audit */}
+<Reveal>
 <div className="mb-32">
   <div className="flex flex-col items-center text-center mb-16">
     <div className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-500 text-[10px] font-mono uppercase tracking-[0.2em] mb-4">
@@ -509,8 +521,10 @@ const metrics = [
     ))}
   </div>
 </div>
+</Reveal>
 
 {/* Feature Deep Dive - Technical Implementation */}
+<Reveal>
 <div className="mb-32">
   <div className="text-center mb-16">
     <h2 className="text-3xl font-bold text-white mb-4 italic uppercase tracking-tighter">Feature Implementations</h2>
@@ -566,8 +580,10 @@ const metrics = [
     ))}
   </div>
 </div>
+</Reveal>
 
         {/* Core Features Grid */}
+        <Reveal>
         <div className="mb-24">
           <h3 className="text-3xl font-semibold text-white mb-12 text-center">Platform Capabilities</h3>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -582,9 +598,11 @@ const metrics = [
             ))}
           </div>
         </div>
+        </Reveal>
 
         {/* Technical Architecture */}
 {/* Technical Architecture - System Dependency View */}
+<Reveal>
 <div className="mb-24">
   <div className="flex items-center gap-4 mb-12">
     <div className="h-px flex-1 bg-zinc-800" />
@@ -668,8 +686,10 @@ const metrics = [
     </span>
   </div>
 </div>
+</Reveal>
 
 {/* Security & Permissions - Logic View */}
+<Reveal>
 <div className="mb-24 relative">
   {/* Background Glow for "Security" feel */}
   <div className="absolute inset-0 bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
@@ -741,8 +761,10 @@ const metrics = [
     </div>
   </div>
 </div>
+</Reveal>
 
 {/* Responsive Engineering - Breakpoint Specification */}
+<Reveal>
 <div className="mb-24">
   <div className="text-center mb-16">
     <h3 className="text-2xl font-bold text-white mb-4">Device-Agnostic Optimization</h3>
@@ -806,8 +828,10 @@ const metrics = [
     ))}
   </div>
 </div>
+</Reveal>
 
         {/* Final Technical CTA */}
+<Reveal>
 <div className="relative mt-32 p-1 border-t border-zinc-800">
   {/* Decorative Corner Accents */}
   <div className="absolute top-0 left-0 w-8 h-px bg-cyan-500 -translate-y-px" />
@@ -867,6 +891,7 @@ const metrics = [
     </div>
   </div>
 </div>
+</Reveal>
 
       </div>
     </section>

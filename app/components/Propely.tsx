@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Reveal } from "@/app/components/Reveal";
 import {
   ExternalLink, Github, Home, Key, DollarSign, FileText, Users, Calendar,
   Bell, Globe, TrendingUp, Clock, Shield, CheckCircle2, ArrowRight,
@@ -95,10 +96,11 @@ const PropertyManagementProjectPage = () => {
   ];
 
   return (
-    <section id="propely" className="bg-zinc-950 py-24 px-6 sm:px-10 text-white">
-      <div className="container mx-auto max-w-6xl">
+    <section id="propely" className="bg-zinc-950 py-16 md:py-26 px-4 sm:px-10 text-white overflow-hidden">
+      <div className="container mx-auto px-0">
 
         {/* Breadcrumb Navigation - Minimalist Path */}
+        <Reveal>
         <nav className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.3em] text-zinc-600 mb-16">
           <Link href="/#work" className="hover:text-[#ffe1c1] transition-colors">Archive</Link>
           <ChevronRight className="w-3 h-3" />
@@ -106,9 +108,11 @@ const PropertyManagementProjectPage = () => {
           <span className="text-[#ffe1c1]">/</span>
           <span className="text-[#ffe1c1]">Propely</span>
         </nav>
+        </Reveal>
 
         {/* Header Section - The Grand Entry */}
-        <div className="relative mb-32">
+        <Reveal>
+        <div className="relative mb-24">
           <div className="grid lg:grid-cols-[1fr_auto] items-start gap-12">
             <div className="max-w-4xl">
               <div className="flex items-center gap-3 mb-8">
@@ -118,7 +122,7 @@ const PropertyManagementProjectPage = () => {
                 </span>
               </div>
 
-              <h1 className="text-7xl md:text-9xl font-bold tracking-tight text-white mb-10 leading-[0.85]">
+              <h1 className="text-5xl md:text-7xl lg:text-9xl font-bold tracking-tight text-white mb-10 leading-[0.85]">
                 Propely<span className="text-[#ffe1c1]">.</span>
               </h1>
 
@@ -148,84 +152,94 @@ const PropertyManagementProjectPage = () => {
             </div>
           </div>
         </div>
+        </Reveal>
 
         {/* Main Preview: The Enterprise Console */}
-        <div className="relative group mb-32">
-          {/* Ambient "Blueprint" Glow - Using the Sand Tone */}
-          <div className="absolute -inset-4 bg-[#ffe1c1]/[0.03] rounded-[3rem] blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+        <Reveal>
+  <div className="relative group mb-16 sm:mb-24 lg:mb-32">
+    {/* Ambient "Blueprint" Glow - Using the Sand Tone */}
+    <div className="absolute -inset-4 bg-[#ffe1c1]/[0.03] rounded-[3rem] blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
 
-          <div className="relative rounded-[2.5rem] overflow-hidden border border-zinc-800 bg-zinc-950 shadow-2xl">
+    <div className="relative rounded-2xl sm:rounded-[2.5rem] overflow-hidden border border-zinc-800 bg-zinc-950 shadow-2xl">
 
-            {/* 1. Technical Header Bar */}
-            <div className="flex items-center justify-between px-8 py-4 bg-zinc-900/40 border-b border-zinc-800/50 backdrop-blur-md">
-              <div className="flex items-center gap-6">
-                <div className="flex gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-800 border border-zinc-700" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-800 border border-zinc-700" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-zinc-800 border border-zinc-700" />
-                </div>
-                <div className="h-4 w-px bg-zinc-800" />
-                <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-[0.3em]">
-                  Core_System_View / v4.0.1
-                </span>
-              </div>
-              <div className="hidden md:flex items-center gap-3">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ffe1c1] opacity-40"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ffe1c1]"></span>
-                </span>
-                <span className="text-[10px] font-mono text-[#ffe1c1] uppercase tracking-[0.2em]">Live_Environment</span>
-              </div>
-            </div>
-
-            {/* 2. The High-Fidelity Preview */}
-            <div className="relative bg-zinc-900">
-              <Image
-                src="/pro.png"
-                alt="Propely Enterprise Dashboard"
-                width={1400}
-                height={900}
-                className="w-full h-auto object-cover group-hover:scale-[1.02] transition-all duration-[1.5s] ease-out"
-                priority
-              />
-              {/* Precision Overlay Grid - Only visible on hover */}
-              <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000 pointer-events-none" />
-            </div>
-
-            {/* 3. The Action Control Bar */}
-            <div className="px-8 py-8 bg-zinc-950 border-t border-zinc-900 flex flex-col md:flex-row items-center justify-between gap-8">
-              <div className="flex flex-col gap-1">
-                <h4 className="text-white text-sm font-bold uppercase tracking-wider">Propely Infrastructure</h4>
-                <p className="text-zinc-500 text-xs font-light max-w-sm">
-                  Full-stack real estate engine with automated rent collection and tenant management.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-4 w-full md:w-auto">
-                <Link
-                  href="https://propely.site"
-                  target="_blank"
-                  className="flex-1 md:flex-none inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-[11px] uppercase tracking-widest transition-all duration-300 shadow-xl"
-                  style={{ backgroundColor: '#ffe1c1', color: '#000' }}
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  Launch Platform
-                </Link>
-
-                <Link
-                  href="https://github.com/king-sws/property-management-platform"
-                  target="_blank"
-                  className="flex-1 md:flex-none inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold text-[11px] uppercase tracking-widest border border-zinc-800 text-zinc-400 hover:text-[#ffe1c1] hover:border-[#ffe1c1]/40 transition-all duration-300 bg-zinc-900/30"
-                >
-                  <Github className="w-4 h-4" />
-                  Source_Repo
-                </Link>
-              </div>
-            </div>
+      {/* 1. Technical Header Bar */}
+      <div className="flex items-center justify-between px-4 sm:px-8 py-3 sm:py-4 bg-zinc-900/40 border-b border-zinc-800/50 backdrop-blur-md">
+        <div className="flex items-center gap-3 sm:gap-6 min-w-0">
+          <div className="flex gap-1.5 sm:gap-2 shrink-0">
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-zinc-800 border border-zinc-700" />
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-zinc-800 border border-zinc-700" />
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-zinc-800 border border-zinc-700" />
           </div>
+          <div className="h-4 w-px bg-zinc-800 shrink-0 hidden sm:block" />
+          <span className="text-[9px] sm:text-[10px] font-mono text-zinc-500 uppercase tracking-[0.15em] sm:tracking-[0.3em] truncate">
+            <span className="sm:hidden">Core_System</span>
+            <span className="hidden sm:inline">Core_System_View / v4.0.1</span>
+          </span>
         </div>
 
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-3">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ffe1c1] opacity-40"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ffe1c1]"></span>
+          </span>
+          <span className="hidden sm:inline text-[10px] font-mono text-[#ffe1c1] uppercase tracking-[0.2em]">
+            Live_Environment
+          </span>
+        </div>
+      </div>
+
+      {/* 2. The High-Fidelity Preview */}
+      <div className="relative bg-zinc-900">
+        <Image
+          src="/pro.png"
+          alt="Propely Enterprise Dashboard"
+          width={1400}
+          height={900}
+          className="w-full h-auto object-cover group-hover:scale-[1.02] transition-all duration-[1.5s] ease-out"
+          priority
+        />
+        {/* Precision Overlay Grid - Only visible on hover */}
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-0 group-hover:opacity-[0.03] transition-opacity duration-1000 pointer-events-none" />
+      </div>
+
+      {/* 3. The Action Control Bar */}
+      <div className="px-5 sm:px-8 py-6 sm:py-8 bg-zinc-950 border-t border-zinc-900 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-5 sm:gap-8">
+        <div className="flex flex-col gap-1 text-center md:text-left">
+          <h4 className="text-white text-sm font-bold uppercase tracking-wider">
+            Propely Infrastructure
+          </h4>
+          <p className="text-zinc-500 text-xs font-light max-w-sm mx-auto md:mx-0">
+            Full-stack real estate engine with automated rent collection and tenant management.
+          </p>
+        </div>
+
+        <div className="flex flex-col xs:flex-row items-center gap-3 sm:gap-4 w-full md:w-auto">
+          <Link
+            href="https://propely.site"
+            target="_blank"
+            className="w-full xs:flex-1 md:flex-none inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-[11px] uppercase tracking-widest transition-all duration-300 shadow-xl"
+            style={{ backgroundColor: '#ffe1c1', color: '#000' }}
+          >
+            <ExternalLink className="w-4 h-4 shrink-0" />
+            Launch Platform
+          </Link>
+
+          <Link
+            href="https://github.com/king-sws/property-management-platform"
+            target="_blank"
+            className="w-full xs:flex-1 md:flex-none inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-[11px] uppercase tracking-widest border border-zinc-800 text-zinc-400 hover:text-[#ffe1c1] hover:border-[#ffe1c1]/40 transition-all duration-300 bg-zinc-900/30"
+          >
+            <Github className="w-4 h-4 shrink-0" />
+            Source_Repo
+          </Link>
+        </div>
+      </div>
+    </div>
+  </div>
+</Reveal>
+
         {/* Propely Exclusive: The System Transformation */}
+        <Reveal>
         <div className="mb-40 space-y-20">
 
           {/* Part 1: The Fragmentation (Problem) */}
@@ -317,8 +331,10 @@ const PropertyManagementProjectPage = () => {
             </div>
           </div>
         </div>
+        </Reveal>
 
         {/* Propely Engineering: The System Layer Debrief */}
+        <Reveal>
         <div className="mb-40">
           <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-6">
             <div className="max-w-xl">
@@ -391,9 +407,11 @@ const PropertyManagementProjectPage = () => {
             ))}
           </div>
         </div>
+        </Reveal>
 
         {/* Propely Showcase: The Command Center Walkthrough */}
-        <div className="mb-40">
+        <Reveal>
+        <div className="mb-24">
           <div className="flex flex-col items-center text-center mb-24">
             <div className="text-[#ffe1c1] font-mono text-[10px] tracking-[0.4em] uppercase mb-4">
               Interface_Module // 03
@@ -479,9 +497,11 @@ const PropertyManagementProjectPage = () => {
             ))}
           </div>
         </div>
+        </Reveal>
 
         {/* Propely: The Functional Schema */}
-        <div className="mb-40">
+        <Reveal>
+        <div className="mb-24">
           <div className="flex items-center gap-4 mb-12">
             <div className="h-px flex-grow bg-zinc-900" />
             <h3 className="text-2xl font-bold text-white tracking-widest uppercase text-center px-6">
@@ -542,8 +562,10 @@ const PropertyManagementProjectPage = () => {
             </div>
           </div>
         </div>
+        </Reveal>
 
         {/* Propely Infrastructure: The Core Engine */}
+        <Reveal>
         <div className="mb-40">
           <div className="relative p-1 bg-zinc-800 rounded-[3rem] overflow-hidden">
             <div className="bg-zinc-950 rounded-[2.9rem] p-8 md:p-16 relative">
@@ -626,8 +648,10 @@ const PropertyManagementProjectPage = () => {
             </div>
           </div>
         </div>
+        </Reveal>
 
         {/* Propely: Advanced Systems & Device Integration */}
+        <Reveal>
         <div className="mb-40 grid lg:grid-cols-12 gap-12">
 
           {/* Left: Advanced Capabilities (The Logic) */}
@@ -680,8 +704,10 @@ const PropertyManagementProjectPage = () => {
             </div>
           </div>
         </div>
+        </Reveal>
 
         {/* Propely: The Final Handover */}
+        <Reveal>
         <div className="mb-10 relative">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#ffe1c1]/[0.02] to-transparent pointer-events-none" />
 
@@ -729,6 +755,7 @@ const PropertyManagementProjectPage = () => {
             </div>
           </div>
         </div>
+        </Reveal>
 
       </div>
     </section>

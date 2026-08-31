@@ -1,16 +1,33 @@
 "use client"
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
-export const Reveal = ({ children, delay = 0 }: { children: React.ReactNode, delay?: number }) => {
+const revealVariants: Variants = {
+  hidden: { opacity: 0, y: 24, filter: "blur(4px)" },
+  visible: { opacity: 1, y: 0, filter: "blur(0px)" },
+};
+
+export const Reveal = ({
+  children,
+  delay = 0,
+  duration = 1,
+  y = 24,
+  once = true,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  duration?: number;
+  y?: number;
+  once?: boolean;
+}) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ 
-        duration: 0.8, 
-        delay: delay,
-        ease: [0.21, 0.47, 0.32, 0.98] 
+      initial={{ opacity: 0, y, filter: "blur(4px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once, margin: "-120px" }}
+      transition={{
+        duration,
+        delay,
+        ease: [0.16, 1, 0.3, 1], // "expo-out" — softer landing than your current curve
       }}
     >
       {children}

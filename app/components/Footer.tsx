@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FaGithub, FaLinkedin, FaTwitter, FaInstagram, FaCodepen } from "react-icons/fa";
 import { FiArrowUpRight, FiArrowUp } from "react-icons/fi";
+import { Reveal } from "@/app/components/Reveal";
 
 interface NavItem {
   label: string;
@@ -34,10 +35,11 @@ const Footer: React.FC = () => {
   const currentYear = React.useMemo(() => new Date().getFullYear(), []);
   
   return (
-    <footer className="bg-zinc-950 pt-24 px-6 sm:px-10 pb-12 border-t border-zinc-900">
-      <div className="container mx-auto px-4">
+    <footer className="bg-zinc-950 pt-16 md:pt-24 px-4 sm:px-10 pb-10 md:pb-12 border-t border-zinc-900">
+      <div className="container mx-auto px-0">
         
         {/* Main Grid */}
+        <Reveal>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-24">
           
           {/* Brand & CTA - 5 Cols */}
@@ -99,6 +101,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
         </div>
+        </Reveal>
 
         {/* Footer Bottom */}
         <div className="pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center gap-6">

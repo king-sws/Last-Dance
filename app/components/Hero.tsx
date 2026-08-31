@@ -6,7 +6,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 import Image from "next/image";
 import Link from "next/link";
-import { TypeWriter } from "@/cards/TypeWriter";
 import { BackgroundBeams } from "./ui/BackgroundBeams";
 
 const dataText = [
@@ -16,13 +15,22 @@ const dataText = [
   "Performance Optimizer.",
 ] as const;
 
+const containerStagger = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
+};
+
+const fadeUpItem = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+
 const Hero = () => {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 500], [0, 80]);
   const [isResumeDropdownOpen, setIsResumeDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Typing effect logic
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [currentText, setCurrentText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -62,20 +70,24 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="min-h-screen relative overflow-hidden px-6 sm:px-10 pt-20 lg:pt-0 flex items-center bg-zinc-950"
+      className="min-h-screen relative overflow-hidden px-4 sm:px-10 pt-20 lg:pt-0 flex items-center bg-zinc-950"
     >
       <BackgroundBeams className="opacity-60" />
-      
-      {/* Decorative Grid Overlay */}
+
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
 
-      <div className="container mx-auto grid lg:grid-cols-12 gap-8 items-center px-6 relative z-10">
-        
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerStagger}
+        className="container mx-auto grid lg:grid-cols-12 gap-8 items-center px-0 relative z-10"
+      >
+
         {/* Left Content - 7 Cols */}
         <div className="lg:col-span-7 space-y-6 lg:space-y-8">
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+          <motion.div
+            variants={fadeUpItem}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="flex items-center gap-3"
           >
             <div className="relative">
@@ -95,33 +107,46 @@ const Hero = () => {
           </motion.div>
 
           <div className="space-y-4">
-            {/* Reduced from text-7xl to text-5xl/6xl for laptop screens */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tighter text-white leading-[1.1]">
+            <motion.h1
+              variants={fadeUpItem}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tighter text-white leading-[1.1]"
+            >
               {currentText}
               <span className="inline-block w-[2px] h-[0.7em] bg-[#ffe1c1] ml-2 animate-pulse" />
               <br />
               <span className="text-xl lg:text-3xl font-light text-zinc-500 mt-2 block italic font-serif">
                 Building <span className="text-white font-sans not-italic font-medium"> Performant </span> Digital {' '}Systems
               </span>
-            </h1>
-            
-            <p className="text-sm lg:text-base text-zinc-400 max-w-lg leading-relaxed font-light">
-              Specialized in building <span className="text-zinc-200">enterprise-grade</span> web applications. 
-              Architectural rigour with pixel-perfect execution, ensuring 
+            </motion.h1>
+
+            <motion.p
+              variants={fadeUpItem}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="text-sm lg:text-base text-zinc-400 max-w-lg leading-relaxed font-light"
+            >
+              Specialized in building <span className="text-zinc-200">enterprise-grade</span> web applications.
+              Architectural rigour with pixel-perfect execution, ensuring
               <span className="text-[#ffe1c1]"> scalability</span> and <span className="text-[#ffe1c1]">user-centric</span> design.
-            </p>
+            </motion.p>
           </div>
 
-          <div className="flex flex-wrap gap-4 lg:gap-6 items-center">
+          <motion.div
+            variants={fadeUpItem}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-wrap gap-4 lg:gap-6 items-center"
+          >
             <div className="relative" ref={dropdownRef}>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => setIsResumeDropdownOpen(!isResumeDropdownOpen)}
-                className="group px-6 py-3 bg-[#ffe1c1] text-black rounded-full flex items-center gap-2.5 transition-all hover:brightness-110 font-bold text-[10px] uppercase tracking-widest"
+                className="group px-6 py-3 bg-[#ffe1c1] text-black rounded-full flex items-center gap-2.5 hover:brightness-110 font-bold text-[10px] uppercase tracking-widest"
               >
                 <FaDownload className="text-xs" /> Get_Resume
                 <FaChevronDown className={`text-[10px] transition-transform duration-300 ${isResumeDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-              
+              </motion.button>
+
               <AnimatePresence>
                 {isResumeDropdownOpen && (
                   <motion.div
@@ -131,10 +156,9 @@ const Hero = () => {
                     className="absolute left-0 mt-3 w-56 rounded-xl bg-zinc-900 border border-zinc-800 shadow-2xl z-50 overflow-hidden"
                   >
                     {[
-                      { name: "Full Stack PDF", path: "/Full-stack BF.pdf" },
-                      { name: "Frontend Focus PDF", path: "/Frontend BF.pdf" }
+                      { name: "Full Stack PDF", path: "/ob.pdf" },
                     ].map((option, i) => (
-                      <a
+                      <Link
                         key={i}
                         href={option.path}
                         download
@@ -142,7 +166,7 @@ const Hero = () => {
                       >
                         <span className="text-[10px] font-bold text-white uppercase tracking-tight">{option.name}</span>
                         <span className="text-[9px] text-zinc-500 mt-0.5 font-mono">Download_Source</span>
-                      </a>
+                      </Link>
                     ))}
                   </motion.div>
                 )}
@@ -155,16 +179,18 @@ const Hero = () => {
             >
               View_Projects <FiArrowUpRight className="text-base group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
-          </div>
+          </motion.div>
         </div>
 
-{/* RIGHT SIDE: THE MANIFEST UI */}
+        {/* RIGHT SIDE: THE MANIFEST UI */}
         <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.9, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           style={{ y }}
           className="lg:col-span-5 hidden lg:block"
         >
           <div className="relative p-8 border border-zinc-900 bg-zinc-950/40 backdrop-blur-sm">
-            {/* Corner Accents */}
             <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#ffe1c1]" />
             <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-zinc-800" />
             <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-zinc-800" />
@@ -179,13 +205,23 @@ const Hero = () => {
               <div className="space-y-4">
                 <div className="space-y-1">
                   <p className="text-[10px] text-zinc-600 uppercase">Primary_Stack:</p>
-                  <div className="flex flex-wrap gap-2 pt-1">
+                  <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06, delayChildren: 0.7 } } }}
+                    className="flex flex-wrap gap-2 pt-1"
+                  >
                     {['Next.js', 'TS', 'Node', 'Postgres'].map(tag => (
-                      <span key={tag} className="text-[10px] text-[#ffe1c1] px-2 py-1 border border-[#ffe1c1]/20 bg-[#ffe1c1]/5">
+                      <motion.span
+                        key={tag}
+                        variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}
+                        transition={{ duration: 0.3 }}
+                        className="text-[10px] text-[#ffe1c1] px-2 py-1 border border-[#ffe1c1]/20 bg-[#ffe1c1]/5"
+                      >
                         {tag}
-                      </span>
+                      </motion.span>
                     ))}
-                  </div>
+                  </motion.div>
                 </div>
 
                 <div className="space-y-2 pt-4">
@@ -215,17 +251,22 @@ const Hero = () => {
             </div>
           </div>
         </motion.div>
-      </div>
-      
-      {/* Scroll Indicator - Moved slightly up */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+      </motion.div>
+
+      {/* Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2, duration: 0.8 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+      >
         <span className="text-[9px] font-mono text-zinc-700 uppercase tracking-[0.2em]">Explore</span>
-        <motion.div 
+        <motion.div
           animate={{ y: [0, 5, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="w-px h-8 bg-gradient-to-b from-[#ffe1c1] to-transparent" 
+          className="w-px h-8 bg-gradient-to-b from-[#ffe1c1] to-transparent"
         />
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -9,18 +9,27 @@ interface MenuToggleProps {
   setNavOpen: (value: boolean) => void;
 }
 
-const MenuToggle = memo(({ navOpen, setNavOpen }: MenuToggleProps) => (
+const MenuToggle = memo(({ navOpen, setNavOpen }: MenuToggleProps) => {
+  const scrollToContact = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const element = document.querySelector("#contact");
+    if (element) {
+      window.scrollTo({ top: element.getBoundingClientRect().top + window.pageYOffset - 100, behavior: "smooth" });
+    }
+  };
+
+  return (
   <div className="flex items-center gap-4">
     <Link
       href="#contact"
-      className="btn btn-secondary max-md:hidden"
-      scroll={false}
+      className="btn btn-secondary max-xl:hidden"
+      onClick={scrollToContact}
     >
       Contact Me
     </Link>
     {/* Technical Toggle: Minimalist approach */}
     <button
-      className="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-[4px] focus:outline-none"
+      className="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-[4px] focus:outline-none"
       onClick={() => setNavOpen(!navOpen)}
     >
       <span className={`h-[1px] bg-[#ffe1c1] transition-all duration-300 ${navOpen ? "w-5 rotate-45 translate-y-[5px]" : "w-6"}`} />
@@ -28,7 +37,8 @@ const MenuToggle = memo(({ navOpen, setNavOpen }: MenuToggleProps) => (
       <span className={`h-[1px] bg-[#ffe1c1] transition-all duration-300 ${navOpen ? "w-5 -rotate-45 -translate-y-[5px]" : "w-6"}`} />
     </button>
   </div>
-));
+  );
+});
 
 MenuToggle.displayName = "MenuToggle";
 export default MenuToggle;

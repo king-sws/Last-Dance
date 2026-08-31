@@ -5,8 +5,8 @@
   :root {
     --color-primary: 8 145 178;    /* Cyan-600 */
     --color-secondary: 20 184 166; /* Teal-500 */
-    --font-body: 'Inter', system-ui, sans-serif;
-    --font-display: 'Inter', system-ui, sans-serif;
+    --font-body: var(--font-inter), system-ui, sans-serif;
+    --font-display: var(--font-inter), system-ui, sans-serif;
     --primary: hsl(202 89% 53%);
     --secondary: hsl(169 82% 42%);
     --background: hsl(240 6% 10%);

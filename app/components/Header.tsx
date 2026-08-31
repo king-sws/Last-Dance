@@ -38,7 +38,7 @@ const Header = () => {
     <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 px-4 md:px-8 ${scrolled ? "pt-4" : "pt-0"}`}>
       <div className={`container mx-auto flex justify-between items-center transition-all duration-500 ${
         scrolled 
-          ? "h-16 bg-zinc-950/80 backdrop-blur-xl border border-zinc-800/50 rounded-full px-6 shadow-[0_8px_32px_rgba(0,0,0,0.5)]" 
+          ? "h-16 bg-zinc-950/80 backdrop-blur-xl border border-zinc-800/50 rounded-full px-4 md:px-6 shadow-[0_8px_32px_rgba(0,0,0,0.5)]" 
           : "h-24 bg-transparent border-b border-transparent px-4"
       }`}>
         <div className={`transition-transform duration-500 ${scrolled ? "scale-90" : "scale-100"}`}>
@@ -50,7 +50,7 @@ const Header = () => {
           
           <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[10px] font-mono text-emerald-500 uppercase tracking-widest">Available_For_Hire</span>
+            <span className="text-[10px] font-mono text-emerald-500 uppercase tracking-widest">Available</span>
           </div>
 
           <MenuToggle navOpen={navOpen} setNavOpen={setNavOpen} />

@@ -13,6 +13,7 @@ import {
   Code2,
   ArrowUpRight
 } from 'lucide-react';
+import { Reveal } from "@/app/components/Reveal";
 
 const SelloraProjectPage = () => {
   const features = [
@@ -98,17 +99,20 @@ const SelloraProjectPage = () => {
   ];
 
   return (
-    <section id="sellora" className="bg-zinc-950 py-24 px-6 sm:px-10 text-white">
-      <div className="container mx-auto max-w-6xl">
+    <section id="sellora" className="bg-zinc-950 py-16 md:py-26 px-4 sm:px-10 text-white overflow-hidden">
+      <div className="container mx-auto px-0">
 
         {/* Breadcrumb - Clean & Minimal */}
+        <Reveal>
         <nav className="flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-zinc-600 mb-20">
           <Link href="/#work" className="hover:text-violet-400 transition-all">Archive</Link>
           <span className="w-8 h-[1px] bg-zinc-800" />
           <span className="text-zinc-200">Sellora_Commerce</span>
         </nav>
+        </Reveal>
 
         {/* 1. Header Section - The Boutique Entrance */}
+        <Reveal>
         <div className="relative mb-20 overflow-visible"> {/* Changed overflow to visible for better shadow/glow play */}
           {/* Soft Radial Ambient Glow */}
           <div className="absolute -top-24 -left-24 w-96 h-96 bg-violet-600/10 rounded-full blur-[120px] pointer-events-none" />
@@ -124,7 +128,7 @@ const SelloraProjectPage = () => {
                 </span>
               </div>
 
-              <h1 className="text-7xl md:text-9xl font-bold tracking-[-0.04em] text-white mb-10 leading-[0.9]">
+              <h1 className="text-5xl md:text-7xl lg:text-9xl font-bold tracking-[-0.04em] text-white mb-10 leading-[0.9]">
                 Sellora<span className="text-violet-500 italic font-light font-serif">.</span>
               </h1>
 
@@ -160,8 +164,10 @@ const SelloraProjectPage = () => {
             </div>
           </div>
         </div>
+        </Reveal>
 
         {/* Performance Metrics - High-End Spec Sheet */}
+        <Reveal>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-zinc-900 border border-zinc-900 rounded-3xl overflow-hidden mb-32 shadow-2xl">
           {metrics.map((metric, idx) => (
             <div
@@ -201,8 +207,10 @@ const SelloraProjectPage = () => {
             </div>
           ))}
         </div>
+        </Reveal>
 
         {/* Hero Image - The Cinematic Frame */}
+        <Reveal>
         <div className="relative mb-32 group">
           {/* The "Outer Glow" - Minimal and sophisticated */}
           <div className="absolute -inset-[1px] bg-gradient-to-b from-zinc-700 to-transparent rounded-2xl opacity-50" />
@@ -273,8 +281,10 @@ const SelloraProjectPage = () => {
             </p>
           </div>
         </div>
+        </Reveal>
 
         {/* Strategic Audit: Problem & Solution */}
+        <Reveal>
         <div className="mb-40 relative">
           {/* Background Label */}
           <div className="absolute -top-10 left-0 text-[60px] font-bold text-white/[0.02] select-none pointer-events-none uppercase tracking-tighter">
@@ -355,9 +365,11 @@ const SelloraProjectPage = () => {
             </div>
           </div>
         </div>
+        </Reveal>
 
         {/* Transaction Logic: The Checkout Pipeline */}
-        <div className="mb-40 relative px-4">
+        <Reveal>
+        <div className="mb-40 relative">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
             <div className="max-w-xl">
               <div className="text-violet-500 font-mono text-[10px] tracking-[0.3em] uppercase mb-4 flex items-center gap-3">
@@ -423,8 +435,10 @@ const SelloraProjectPage = () => {
             </div>
           </div>
         </div>
+        </Reveal>
 
         {/* Engineering Log: Technical Solutions */}
+        <Reveal>
         <div className="mb-40 relative">
           <div className="flex flex-col mb-16">
             <div className="flex items-center gap-3 text-violet-500 font-mono text-[10px] tracking-[0.3em] uppercase mb-4">
@@ -491,8 +505,10 @@ const SelloraProjectPage = () => {
             ))}
           </div>
         </div>
+        </Reveal>
 
         {/* Platform Features - Clean Technical Style */}
+        <Reveal>
         <div className="mb-24">
           <div className="border-l-2 border-violet-500 pl-6 mb-12">
             <h2 className="text-3xl font-bold text-white">Platform Architecture</h2>
@@ -541,23 +557,25 @@ const SelloraProjectPage = () => {
             ))}
           </div>
         </div>
+        </Reveal>
 
         {/* Core Features: The Bento Showcase */}
+        <Reveal>
         <div className="mb-12">
-          <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
-            <div className="max-w-xl">
-              <div className="text-violet-500 font-mono text-[10px] tracking-[0.3em] uppercase mb-4 flex items-center gap-3">
-                <div className="w-8 h-px bg-violet-500/30" />
-                Feature_Set
-              </div>
-              <h3 className="text-4xl font-bold text-white tracking-tight">
-                Core <span className="text-violet-500 italic font-serif font-light">Capabilities</span>
-              </h3>
-            </div>
-            <p className="text-zinc-500 text-sm max-w-xs font-light leading-relaxed border-l border-zinc-800 pl-6 hidden md:block">
-              Proprietary infrastructure built for high-volume transactions and seamless product discovery.
-            </p>
-          </div>
+          <div className="flex flex-col md:flex-row items-center md:items-end justify-between mb-16 gap-6 text-center md:text-left">
+  <div className="max-w-xl">
+    <div className="text-violet-500 font-mono text-[10px] tracking-[0.3em] uppercase mb-4 flex items-center justify-center md:justify-start gap-3">
+      <div className="w-8 h-px bg-violet-500/30" />
+      Feature_Set
+    </div>
+    <h3 className="text-4xl font-bold text-white tracking-tight">
+      Core <span className="text-violet-500 italic font-serif font-light">Capabilities</span>
+    </h3>
+  </div>
+  <p className="text-zinc-500 text-sm max-w-xs font-light leading-relaxed border-l border-zinc-800 pl-6 hidden md:block">
+    Proprietary infrastructure built for high-volume transactions and seamless product discovery.
+  </p>
+</div>
 
           <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-6">
             {features.map((feature, index) => {
@@ -597,8 +615,10 @@ const SelloraProjectPage = () => {
             })}
           </div>
         </div>
+        </Reveal>
 
         {/* Technical Stack: The Engineering Spec Sheet */}
+        <Reveal>
         <div className="mb-40 border-t border-zinc-800 pt-20">
           <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-20">
             <div className="max-w-xl">
@@ -668,6 +688,7 @@ const SelloraProjectPage = () => {
             ))}
           </div>
         </div>
+        </Reveal>
 
         {/* Responsive Design */}
         {/* <div className="mb-24 text-center">
@@ -688,6 +709,7 @@ const SelloraProjectPage = () => {
         </div> */}
 
         {/* Final CTA: The Project Handover */}
+        <Reveal>
         <div className="mt-40 mb-20">
           <div className="relative border border-zinc-800 bg-zinc-950 rounded-[2.5rem] overflow-hidden">
             {/* Subtle Structural Detail */}
@@ -745,6 +767,7 @@ const SelloraProjectPage = () => {
             </div>
           </div>
         </div>
+        </Reveal>
 
       </div>
     </section>

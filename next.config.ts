@@ -1,27 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   experimental: {
     optimizeCss: true
   },
-  compress: false,
   images: {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 86400,
-    domains: [
-      'skillicons.dev', 
-      'user-images.githubusercontent.com',
-      "ui.shadcn.com",
-      'camo.githubusercontent.com'  // Added this domain
+    remotePatterns: [
+      { protocol: 'https', hostname: 'skillicons.dev' },
+      { protocol: 'https', hostname: 'user-images.githubusercontent.com' },
+      { protocol: 'https', hostname: 'ui.shadcn.com' },
+      { protocol: 'https', hostname: 'camo.githubusercontent.com' },
     ],
   },
-      typescript: {
-        ignoreBuildErrors: true,
-      },
-      eslint: {
-        ignoreDuringBuilds: true,
-      },
 };
 
 export default nextConfig;

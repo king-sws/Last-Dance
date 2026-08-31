@@ -3,6 +3,16 @@ import SkillsCard from "@/cards/SkillsCard";
 import { motion } from "framer-motion";
 import { FiLayers, FiCode, FiDatabase, FiGrid } from "react-icons/fi";
 
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.05 } },
+};
+
+const cardItem = {
+  hidden: { opacity: 0, y: 16, scale: 0.96 },
+  visible: { opacity: 1, y: 0, scale: 1 },
+};
+
 const Skills = () => {
   const skillCategories = [
     {
@@ -52,52 +62,76 @@ const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-26 bg-zinc-950 px-6 sm:px-10 relative overflow-hidden">
+    <section id="skills" className="py-16 md:py-26 bg-zinc-950 px-4 sm:px-10 relative overflow-hidden">
       {/* Background Accent: Subtle Sand Glow */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#ffe1c1]/[0.02] blur-[120px] rounded-full pointer-events-none" />
+      <motion.div
+        className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#ffe1c1]/[0.02] blur-[120px] rounded-full pointer-events-none"
+        animate={{ opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      />
 
-      <div className="container mx-auto px-6">
-        
-        {/* Section Header: Optimized to break repetition */}
-<div className="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-8 border-l border-zinc-900 pl-8 relative">
-  {/* Absolute Accent Line */}
-  <div className="absolute left-0 top-0 w-1 h-12 bg-[#ffe1c1]" />
-  
-  <div className="max-w-2xl">
-    <div className="flex items-center gap-3 mb-4">
-      <span className="text-[10px] font-mono uppercase tracking-[0.5em] text-zinc-600">
-        System_Capabilities / <span className="text-[#ffe1c1]">Inventory.v2</span>
-      </span>
-    </div>
-    
-    <h2 className="text-6xl md:text-8xl font-bold text-white tracking-tighter leading-none">
-      The Arsenal<span className="text-[#ffe1c1] opacity-50">_</span>
-    </h2>
-  </div>
+      <div className="container mx-auto px-0">
 
-  <div className="max-w-xs">
-    <p className="text-zinc-500 text-sm font-light leading-relaxed border-t border-zinc-900 pt-4">
-      A curated stack of <span className="text-zinc-300">industry-standard tools</span> engineered for 
-      high-performance infrastructure and modular scalability.
-    </p>
-    {/* Visual Status Indicator */}
-    <div className="flex items-center gap-2 mt-4">
-      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-      <span className="text-[9px] font-mono text-emerald-500/80 uppercase tracking-widest">Modules_Verified</span>
-    </div>
-  </div>
-</div>
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: false, amount: 0.6 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-24 flex flex-col md:flex-row md:items-end justify-between gap-8 border-l border-zinc-900 pl-8 relative"
+        >
+          <motion.div
+            className="absolute left-0 top-0 w-1 bg-[#ffe1c1] origin-top"
+            initial={{ height: 0 }}
+            whileInView={{ height: 48 }}
+            viewport={{ once: false, amount: 0.8 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          />
+
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-[10px] font-mono uppercase tracking-[0.5em] text-zinc-600">
+                System_Capabilities / <span className="text-[#ffe1c1]">Inventory.v2</span>
+              </span>
+            </div>
+
+            <h2 className="text-5xl md:text-6xl lg:text-8xl font-bold text-white tracking-tighter leading-none">
+              The Arsenal<span className="text-[#ffe1c1] opacity-50">_</span>
+            </h2>
+          </div>
+
+          <div className="max-w-xs">
+            <p className="text-zinc-500 text-sm font-light leading-relaxed border-t border-zinc-900 pt-4">
+              A curated stack of <span className="text-zinc-300">industry-standard tools</span> engineered for
+              high-performance infrastructure and modular scalability.
+            </p>
+            <div className="flex items-center gap-2 mt-4">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[9px] font-mono text-emerald-500/80 uppercase tracking-widest">Modules_Verified</span>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Skill Modules */}
         <div className="space-y-24">
           {skillCategories.map((category, idx) => (
             <div key={idx} className="relative">
               {/* Category Header with ID */}
-              <div className="flex items-center justify-between mb-12 pb-4 border-b border-zinc-900">
+              <motion.div
+                initial={{ opacity: 0, x: -16 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: false, amount: 0.7 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="flex items-center justify-between mb-12 pb-4 border-b border-zinc-900"
+              >
                 <div className="flex items-center gap-4">
-                  <div className="text-[#ffe1c1] p-2 bg-zinc-900 rounded-lg border border-zinc-800">
+                  <motion.div
+                    whileHover={{ rotate: 8, scale: 1.1 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                    className="text-[#ffe1c1] p-2 bg-zinc-900 rounded-lg border border-zinc-800"
+                  >
                     {category.icon}
-                  </div>
+                  </motion.div>
                   <h3 className="text-2xl font-bold tracking-tight text-white uppercase italic">
                     {category.name}
                   </h3>
@@ -105,30 +139,40 @@ const Skills = () => {
                 <span className="text-[10px] font-mono text-zinc-700 tracking-[0.3em]">
                   {category.id}
                 </span>
-              </div>
+              </motion.div>
 
-              {/* Grid of Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Grid of Cards — staggers in together as a group */}
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false, amount: 0.15 }}
+                variants={staggerContainer}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+              >
                 {category.items.map((item, i) => (
-                  <SkillsCard 
-                    key={i} 
-                    item={item} 
-                    // Note: Ensure your SkillsCard uses a minimal, dark style to match
-                  />
+                  <motion.div key={i} variants={cardItem} transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}>
+                    <SkillsCard item={item} />
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </div>
           ))}
         </div>
 
         {/* Technical Footer */}
-        <div className="mt-24 pt-8 border-t border-zinc-900 flex justify-between items-center text-[9px] font-mono text-zinc-800 uppercase tracking-[0.5em]">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: false, amount: 0.9 }}
+          transition={{ duration: 0.6 }}
+          className="mt-24 pt-8 border-t border-zinc-900 flex justify-between items-center text-[9px] font-mono text-zinc-800 uppercase tracking-[0.5em]"
+        >
           <span>Inventory_Ready</span>
           <div className="flex gap-4">
             <FiGrid />
             <span>Architecture_Verified</span>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

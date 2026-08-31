@@ -1,12 +1,27 @@
-export const NAV_ITEMS = [
+export interface NavItem {
+  label: string;
+  link: string;
+  className?: string;
+  dropdown?: { label: string; link: string }[];
+}
+
+export const NAV_ITEMS: NavItem[] = [
   { label: 'Home', link: '#home' },
   { label: 'About', link: '#about' },
-  { label: "Propely", link: '#propely'},
-  { label: 'Sellora', link: '#sellora' },
-  { label: 'Blutto', link: '#blutto' },
+  { label: 'Experience', link: '#experience' },
+  {
+    label: 'Projects',
+    link: '#propely',
+    dropdown: [
+      { label: 'Propely', link: '#propely' },
+      { label: 'MangaTek', link: '#manga' },
+      { label: 'Sellora', link: '#sellora' },
+      { label: 'Blutto', link: '#blutto' },
+    ],
+  },
   { label: 'Work', link: '#work' },
   { label: 'Reviews', link: '#reviews' },
-  { label: 'Contact', link: '#contact', className: 'md:hidden' }
+  { label: 'Contact', link: '#contact', className: 'xl:hidden' },
 ];
 
 export const SCROLL_CONFIG = {
@@ -15,7 +30,7 @@ export const SCROLL_CONFIG = {
 };
 
 export const BREAKPOINTS = {
-  DESKTOP: 768
+  DESKTOP: 1024
 };
 
 export const throttle = <T extends (...args: unknown[]) => unknown>(fn: T, delay: number) => {
